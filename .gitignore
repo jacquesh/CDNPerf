@@ -1,6 +1,21 @@
+# Vim
 *.swp
 *.swo
+
+# Videos
 *.mp4
 *.flv
 *.webm
+
+# Latex
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.aux
+*.bbl
+*.blg
+*.brf
+
+# Misc
 *.exe
