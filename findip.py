@@ -3,12 +3,17 @@ import socket
 import sys
 import re
 
+if sys.platform == 'win32':
+    dumptool = 'windump'
+else:
+    dumptool = 'tcpdump'
+
 def getPrimaryNetworkDevice():
-    deviceListLines = subprocess.Popen(['windump', '-D'], stdout=subprocess.PIPE).stdout.readlines()
+    deviceListLines = subprocess.Popen([dumptool, '-D'], stdout=subprocess.PIPE).stdout.readlines()
     deviceCount = len(deviceListLines)
     packetSniffProcList = []
     for deviceID in range(deviceCount):
-        packetSniffProc = subprocess.Popen(['windump', '-n', '-c 1', '-i %s' % str(deviceID+1), 'icmp'])
+        packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID+1), 'icmp'])
         packetSniffProcList.append(packetSniffProc)
 
     subprocess.Popen(['ping', 'www.google.com']).wait()
@@ -53,7 +58,7 @@ def getHostFromURL(targetURL):
 def getIPFromHost(targetHost):
     return socket.gethostbyname(targetHost)
 
-def getContentIP(targetURL, networkDeviceID):
+def getContentIP(targetURL, localIP, networkDeviceID):
     downloadProcess = subprocess.Popen(['youtube-dl', targetURL])
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
@@ -65,8 +70,8 @@ def getContentIP(targetURL, networkDeviceID):
     -c specifies how many packets to capture before stopping
     Specifying tcp just makes it filter out everything that isn't sent via TCP
     """
-    dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 5000', 'tcp']
-    dumpProcess = subprocess.Popen(['windump'] + dumpArgs, stdout=subprocess.PIPE)
+    dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 3000', 'tcp']
+    dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE)
     dumpOutput = dumpProcess.stdout.readlines()
     downloadProcess.kill()
 
@@ -97,8 +102,7 @@ def getContentIP(targetURL, networkDeviceID):
     else:
         return maxIP
 
-def profileURL(targetURL):
-    listenDeviceID = getPrimaryNetworkDevice()
+def profileURL(targetURL, localIP, listenDeviceID):
     targetHost = getHostFromURL(targetURL)
     targetIP = getIPFromHost(targetHost)
 
@@ -107,21 +111,23 @@ def profileURL(targetURL):
     cdnIP = getIPFromHost(cdnHost)
 
     contentIP = '...'
-    contentIP = getContentIP(targetURL, listenDeviceID)
+    contentIP = getContentIP(targetURL, localIP, listenDeviceID)
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
             % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
 
 
-# TODO: Make it OS-independent (sys.platform == 'win32')
+def run(inputFilename):
+    localIP = getLocalIP()
+    listenDeviceID = getPrimaryNetworkDevice()
+    inputFile = open(inputFilename, 'r')
+    for url in inputFile:
+        targetURL = url.strip()
+        profileURL(targetURL, localIP, listenDeviceID)
+
 
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('No argument given, expected "findip.py <contentUrl>"')
     else:
-        inputFilename = sys.argv[1]
-        localIP = getLocalIP()
-        inputFile = open(inputFilename, 'r')
-        for url in inputFile:
-            targetURL = url.strip()
-            profileURL(targetURL)
+        run(sys.argv[1])
