@@ -3,6 +3,31 @@ import socket
 import sys
 import re
 
+def getPrimaryNetworkDevice():
+    deviceListLines = subprocess.Popen(['windump', '-D'], stdout=subprocess.PIPE).stdout.readlines()
+    deviceCount = len(deviceListLines)
+    packetSniffProcList = []
+    for deviceID in range(deviceCount):
+        packetSniffProc = subprocess.Popen(['windump', '-n', '-c 1', '-i %s' % str(deviceID+1), 'icmp'])
+        packetSniffProcList.append(packetSniffProc)
+
+    subprocess.Popen(['ping', 'www.google.com']).wait()
+    validIDList = []
+    for deviceID in range(deviceCount):
+        if packetSniffProcList[deviceID].poll() is not None:
+            validIDList.append(deviceID+1)
+        else:
+            packetSniffProcList[deviceID].kill()
+
+    if len(validIDList) == 0:
+        print('ERROR: No network devices detected the ICMP request')
+        return -1
+    elif len(validIDList) == 1:
+        return validIDList[0]
+    else:
+        print('Multiple network devices detected the ICMP request, returning the first one')
+        return validIDList[0]
+
 def getLocalIP():
     ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE).stdout.readlines()
     localIP = '(Unkown)'
@@ -14,7 +39,7 @@ def getLocalIP():
     return localIP
 
 def getContentURL(targetURL):
-    return subprocess.Popen(['youtube-dl', '-g', targetURL], stdout=subprocess.PIPE).stdout.read()
+    return str(subprocess.Popen(['youtube-dl', '-g', targetURL], stdout=subprocess.PIPE).stdout.read())
 
 def getHostFromURL(targetURL):
     hostStartIndex = targetURL.find('//')
@@ -28,7 +53,7 @@ def getHostFromURL(targetURL):
 def getIPFromHost(targetHost):
     return socket.gethostbyname(targetHost)
 
-def getContentIP(targetURL):
+def getContentIP(targetURL, networkDeviceID):
     downloadProcess = subprocess.Popen(['youtube-dl', targetURL])
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
@@ -40,7 +65,7 @@ def getContentIP(targetURL):
     -c specifies how many packets to capture before stopping
     Specifying tcp just makes it filter out everything that isn't sent via TCP
     """
-    dumpArgs = ['-nvS', '-s', '128', '-i', '2', '-c', '5000', 'tcp']
+    dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 5000', 'tcp']
     dumpProcess = subprocess.Popen(['windump'] + dumpArgs, stdout=subprocess.PIPE)
     dumpOutput = dumpProcess.stdout.readlines()
     downloadProcess.kill()
@@ -48,7 +73,7 @@ def getContentIP(targetURL):
     ipMap = {}
     ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
     for line in dumpOutput:
-        ipMatch = ipRegex.search(line)
+        ipMatch = ipRegex.search(str(line))
         if not ipMatch:
             continue
 
@@ -72,22 +97,31 @@ def getContentIP(targetURL):
     else:
         return maxIP
 
+def profileURL(targetURL):
+    listenDeviceID = getPrimaryNetworkDevice()
+    targetHost = getHostFromURL(targetURL)
+    targetIP = getIPFromHost(targetHost)
+
+    cdnURL = getContentURL(targetURL)
+    cdnHost = getHostFromURL(cdnURL)
+    cdnIP = getIPFromHost(cdnHost)
+
+    contentIP = '...'
+    contentIP = getContentIP(targetURL, listenDeviceID)
+    print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
+            % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
+
+
+# TODO: Make it OS-independent (sys.platform == 'win32')
 
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('No argument given, expected "findip.py <contentUrl>"')
     else:
-        targetURL = sys.argv[1]
+        inputFilename = sys.argv[1]
         localIP = getLocalIP()
-        targetHost = getHostFromURL(targetURL)
-        targetIP = getIPFromHost(targetHost)
-
-        cdnURL = getContentURL(targetURL)
-        cdnHost = getHostFromURL(cdnURL)
-        cdnIP = getIPFromHost(cdnHost)
-
-        contentIP = '...'
-        #contentIP = getContentIP(targetURL)
-        print('%s (%s) refers to a CDN at %s (%s) which delivers content from %s'
-                % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
+        inputFile = open(inputFilename, 'r')
+        for url in inputFile:
+            targetURL = url.strip()
+            profileURL(targetURL)
