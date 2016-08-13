@@ -2,25 +2,29 @@ import subprocess
 import socket
 import sys
 import re
+import requests
 
 if sys.platform == 'win32':
     dumptool = 'windump'
+    traceTool = 'tracert'
 else:
     dumptool = 'tcpdump'
+    traceTool = 'traceroute'
+
 
 def getPrimaryNetworkDevice():
     deviceListLines = subprocess.Popen([dumptool, '-D'], stdout=subprocess.PIPE).stdout.readlines()
     deviceCount = len(deviceListLines)
     packetSniffProcList = []
     for deviceID in range(deviceCount):
-        packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID+1), 'icmp'])
+        packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID + 1), 'icmp'])
         packetSniffProcList.append(packetSniffProc)
 
     subprocess.Popen(['ping', 'www.google.com']).wait()
     validIDList = []
     for deviceID in range(deviceCount):
         if packetSniffProcList[deviceID].poll() is not None:
-            validIDList.append(deviceID+1)
+            validIDList.append(deviceID + 1)
         else:
             packetSniffProcList[deviceID].kill()
 
@@ -33,30 +37,35 @@ def getPrimaryNetworkDevice():
         print('Multiple network devices detected the ICMP request, returning the first one')
         return validIDList[0]
 
+
 def getLocalIP():
     ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE).stdout.readlines()
-    localIP = '(Unkown)'
+    localIP = '(Unknown)'
     for line in ipconfigLines:
         lineStr = str(line.strip())
         if not lineStr.startswith('IPv4 Address'):
             continue
-        localIP = lineStr[lineStr.find(':')+2:]
+        localIP = lineStr[lineStr.find(':') + 2:]
     return localIP
+
 
 def getContentURL(targetURL):
     return str(subprocess.Popen(['youtube-dl', '-g', targetURL], stdout=subprocess.PIPE).stdout.read())
 
+
 def getHostFromURL(targetURL):
     hostStartIndex = targetURL.find('//')
-    if(hostStartIndex >= 0):
+    if (hostStartIndex >= 0):
         hostStartIndex += 2
     else:
         hostStartIndex = 0
     hostEndIndex = targetURL.find('/', hostStartIndex)
     return targetURL[hostStartIndex:hostEndIndex]
 
+
 def getIPFromHost(targetHost):
     return socket.gethostbyname(targetHost)
+
 
 def getContentIP(targetURL, localIP, networkDeviceID):
     downloadProcess = subprocess.Popen(['youtube-dl', targetURL])
@@ -97,10 +106,11 @@ def getContentIP(targetURL, localIP, networkDeviceID):
         if ipMap[ip] > maxIPCount:
             maxIPCount = ipMap[ip]
             maxIP = ip
-    if maxIPCount < len(dumpOutput)/2:
+    if maxIPCount < len(dumpOutput) / 2:
         return None
     else:
         return maxIP
+
 
 def profileURL(targetURL, localIP, listenDeviceID):
     targetHost = getHostFromURL(targetURL)
@@ -113,7 +123,20 @@ def profileURL(targetURL, localIP, listenDeviceID):
     contentIP = '...'
     contentIP = getContentIP(targetURL, localIP, listenDeviceID)
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
-            % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
+          % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
+
+    whoisDict = whoisIP(targetIP)
+    location = (whoisDict["region"] + " " + whoisDict["country"]).strip()
+    print("Target IP ({0}) location is in {1} and managed by {2}".format(targetIP, location, whoisDict["org"]))
+
+
+def traceRouteToIP(url):
+    return subprocess.Popen([traceTool, url], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+
+
+def whoisIP(ip):
+    whoisRequest = requests.get("http://ipinfo.io/{0}/json".format(ip))
+    return whoisRequest.json()
 
 
 def run(inputFilename):
