@@ -130,25 +130,23 @@ def profileURL(targetURL, localIP, listenDeviceID):
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
           % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
 
-    # Example trace route
-    traceroute = traceRouteToIP(targetIP)
-    print("Trace route to Target IP ({0})".format(targetIP))
-    print(traceroute)
-
     targetIPWhoisDict = whoisIP(targetIP)
     targetIPLocation = (targetIPWhoisDict["region"] + " " + targetIPWhoisDict["country"]).strip()
     targetIPPing = pingIP(targetIP)
-    print("Target IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"], targetIPPing))
+    targetIPRoute = traceRouteToIP(targetIP)
+    print("Target IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"], targetIPPing, len(targetIPRoute)))
 
     cdnIPWhoisDict = whoisIP(cdnIP)
     cdnIPLocation = (cdnIPWhoisDict["region"] + " " + cdnIPWhoisDict["country"]).strip()
     cdnIPPing = pingIP(cdnIP)
-    print("CDN IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"], cdnIPPing))
+    cdnIPRoute = traceRouteToIP(cdnIP)
+    print("CDN IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"], cdnIPPing, len(cdnIPRoute)))
 
     contentIPWhoisDict = whoisIP(contentIP)
     contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
-    contentIP = pingIP(contentIP)
-    print("Content IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"], contentIPPing))
+    contentIPPing = pingIP(contentIP)
+    contentIPRoute = traceRouteToIP(contentIP)
+    print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"], contentIPPing, len(contentIPRoute)))
 
 
 def traceRouteToIP(url):
