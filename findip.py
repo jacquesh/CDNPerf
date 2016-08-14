@@ -26,7 +26,10 @@ def getPrimaryNetworkDevice():
         packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID + 1), 'icmp'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
         packetSniffProcList.append(packetSniffProc)
 
-    subprocess.Popen(['ping', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
+    if sys.platform == 'win32':
+        subprocess.Popen(['ping', '-n', '4', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
+    else:
+        subprocess.Popen(['ping', '-c', '4', '-s', '24', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
     validIDList = []
     for deviceID in range(deviceCount):
         if packetSniffProcList[deviceID].poll() is not None:
@@ -45,14 +48,18 @@ def getPrimaryNetworkDevice():
 
 
 def getLocalIP():
-    ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.readlines()
-    localIP = '(Unknown)'
-    for line in ipconfigLines:
-        lineStr = str(line.strip())
-        if not lineStr.startswith('IPv4 Address'):
-            continue
-        localIP = lineStr[lineStr.find(':') + 2:]
-    return localIP
+    if sys.platform == 'win32':
+        ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.readlines()
+        localIP = '(Unknown)'
+        for line in ipconfigLines:
+            lineStr = str(line.strip())
+            if not lineStr.startswith('IPv4 Address'):
+                continue
+            localIP = lineStr[lineStr.find(':') + 2:]
+        return localIP
+    else:
+        ipRoute = subprocess.Popen(["ip", "route", "get", "8.8.8.8"], stdout=subprocess.PIPE)
+        return subprocess.check_output(["awk", "{print $NF; exit}"], stdin=ipRoute.stdout).strip()
 
 
 def getContentURL(targetURL):
@@ -92,9 +99,11 @@ def getContentIP(targetURL, localIP, networkDeviceID):
 
     ipMap = {}
     ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
+    nonMatches = 0
     for line in dumpOutput:
         ipMatch = ipRegex.search(str(line))
         if not ipMatch:
+            nonMatches += 1
             continue
 
         sourceIP = ipMatch.group(1)
@@ -112,7 +121,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
         if ipMap[ip] > maxIPCount:
             maxIPCount = ipMap[ip]
             maxIP = ip
-    if maxIPCount < len(dumpOutput) / 2:
+    if maxIPCount < (len(dumpOutput) - nonMatches) / 2:
         return None
     else:
         return maxIP
