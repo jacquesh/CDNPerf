@@ -153,9 +153,13 @@ def traceRouteToIP(url):
     It does not resolve hostnames, is limited to maximum 20 hops
     and will wait 500 milliseconds before considering a packet dropped."""
     if sys.platform == 'win32':
-        return subprocess.check_output([traceTool, "-d", "-h", "20", "-w", "500", url]).strip()
+        traceOutput = subprocess.check_output([traceTool, "-d", "-h", "20", "-w", "500", url])
     else:
-        return subprocess.check_output([traceTool, "-n", "-m", "20", "-w", "0.5", url, "32"]).strip()
+        traceOutput = subprocess.check_output([traceTool, "-n", "-m", "20", "-w", "0.5", url, "32"])
+    traceStr = traceOutput.decode()
+    hopExpr = re.compile(r'^\s+\d+')
+    traceLines = [l for l in traceStr.split(os.linesep) if hopExpr.match(l) is not None]
+    return traceLines
 
 
 def whoisIP(ip):
