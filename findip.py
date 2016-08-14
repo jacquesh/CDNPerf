@@ -3,6 +3,8 @@ import socket
 import sys
 import re
 import requests
+import psutil
+from time import sleep
 
 if sys.platform == 'win32':
     dumptool = 'windump'
@@ -125,13 +127,32 @@ def profileURL(targetURL, localIP, listenDeviceID):
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
           % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
 
-    whoisDict = whoisIP(targetIP)
-    location = (whoisDict["region"] + " " + whoisDict["country"]).strip()
-    print("Target IP ({0}) location is in {1} and managed by {2}".format(targetIP, location, whoisDict["org"]))
+    # Example trace route
+    traceroute = traceRouteToIP(targetIP)
+    print("Trace route to Target IP ({0})".format(targetIP))
+    print(traceroute)
+
+    targetIPWhoisDict = whoisIP(targetIP)
+    targetIPLocation = (targetIPWhoisDict["region"] + " " + targetIPWhoisDict["country"]).strip()
+    print("Target IP ({0}) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"]))
+
+    cdnIPWhoisDict = whoisIP(cdnIP)
+    cdnIPLocation = (cdnIPWhoisDict["region"] + " " + cdnIPWhoisDict["country"]).strip()
+    print("CDN IP ({0}) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"]))
+
+    contentIPWhoisDict = whoisIP(contentIP)
+    contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
+    print("Content IP ({0}) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"]))
 
 
 def traceRouteToIP(url):
-    return subprocess.Popen([traceTool, url], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+    """Executes a trace route to the argument url or ip.
+    It does not resolve hostnames, is limited to maximum 20 hops
+    and will wait 500 milliseconds before considering a packet dropped."""
+    if sys.platform == 'win32':
+        return subprocess.check_output([traceTool, "-d", "-h", "20", "-w", "500", url]).strip()
+    else:
+        return subprocess.check_output([traceTool, "-n", "-m", "20", "-w", "0.5", url, "32"]).strip()
 
 
 def whoisIP(ip):
@@ -139,7 +160,21 @@ def whoisIP(ip):
     return whoisRequest.json()
 
 
+def measureExistingNetworkUsage(sleepTime = 3, thresholdRecvKBs = 100, thresholdSendKBs = 30):
+    initialIoStat = psutil.net_io_counters(pernic=False)
+    initialSent = initialIoStat[0]
+    initialRecv = initialIoStat[1]
+    sleep(sleepTime)
+    afterIoStat = psutil.net_io_counters(pernic=False)
+    afterSent = afterIoStat[0]
+    afterRecv = afterIoStat[1]
+    if afterRecv - initialRecv > thresholdRecvKBs * 1024 * sleepTime or afterSent - initialSent > thresholdSendKBs * 1024 * sleepTime:
+        print("Existing network activity detected, ensure that there is no network activity before executing")
+        sys.exit(1)
+
+
 def run(inputFilename):
+    measureExistingNetworkUsage()
     localIP = getLocalIP()
     listenDeviceID = getPrimaryNetworkDevice()
     inputFile = open(inputFilename, 'r')
