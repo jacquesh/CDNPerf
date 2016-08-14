@@ -4,6 +4,7 @@ import sys
 import re
 import requests
 import psutil
+import os
 from time import sleep
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
@@ -125,7 +126,6 @@ def profileURL(targetURL, localIP, listenDeviceID):
     cdnHost = getHostFromURL(cdnURL)
     cdnIP = getIPFromHost(cdnHost)
 
-    contentIP = '...'
     contentIP = getContentIP(targetURL, localIP, listenDeviceID)
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
           % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
@@ -137,15 +137,18 @@ def profileURL(targetURL, localIP, listenDeviceID):
 
     targetIPWhoisDict = whoisIP(targetIP)
     targetIPLocation = (targetIPWhoisDict["region"] + " " + targetIPWhoisDict["country"]).strip()
-    print("Target IP ({0}) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"]))
+    targetIPPing = pingIP(targetIP)
+    print("Target IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"], targetIPPing))
 
     cdnIPWhoisDict = whoisIP(cdnIP)
     cdnIPLocation = (cdnIPWhoisDict["region"] + " " + cdnIPWhoisDict["country"]).strip()
-    print("CDN IP ({0}) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"]))
+    cdnIPPing = pingIP(cdnIP)
+    print("CDN IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"], cdnIPPing))
 
     contentIPWhoisDict = whoisIP(contentIP)
     contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
-    print("Content IP ({0}) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"]))
+    contentIP = pingIP(contentIP)
+    print("Content IP ({0}  RTT:{3}ms) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"], contentIPPing))
 
 
 def traceRouteToIP(url):
@@ -165,6 +168,24 @@ def traceRouteToIP(url):
 def whoisIP(ip):
     whoisRequest = requests.get("http://ipinfo.io/{0}/json".format(ip))
     return whoisRequest.json()
+
+
+def pingIP(ip):
+    if sys.platform == 'win32':
+        pingOutput = subprocess.check_output(['ping', '-n', '4', '-l', '32', '-w', '500', ip])
+    else:
+        pingOutput = subprocess.check_output(['ping', '-c', '4', '-s', '32', '-w', '0.5', ip])
+    pingStr = pingOutput.decode().strip()
+    pingResult = pingStr.split(os.linesep)[-1]
+    if sys.platform == 'win32':
+        avgPingExpr = re.compile(r'Average = (\d+)ms')
+    else:
+        avgPingExpr = re.compile(r' = \d+\.\d+/(\d+\.\d+)/')
+    match = avgPingExpr.search(pingResult)
+    if match is None:
+        return None
+    else:
+        return match.group(1)
 
 
 def measureExistingNetworkUsage(sleepTime = 3, thresholdRecvKBs = 100, thresholdSendKBs = 30):
