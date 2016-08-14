@@ -160,7 +160,8 @@ def whoisIP(ip):
     return whoisRequest.json()
 
 
-def measureExistingNetworkUsage(sleepTime = 3, thresholdRecvKBs = 100, thresholdSendKBs = 30):
+def measureExistingNetworkActivity(sleepTime = 3, thresholdRecvKBs = 100, thresholdSendKBs = 30):
+    """Checks if there is existing network activity from this machine which could disrupt the measurements"""
     initialIoStat = psutil.net_io_counters(pernic=False)
     initialSent = initialIoStat[0]
     initialRecv = initialIoStat[1]
@@ -174,7 +175,7 @@ def measureExistingNetworkUsage(sleepTime = 3, thresholdRecvKBs = 100, threshold
 
 
 def run(inputFilename):
-    measureExistingNetworkUsage()
+    measureExistingNetworkActivity()
     localIP = getLocalIP()
     listenDeviceID = getPrimaryNetworkDevice()
     inputFile = open(inputFilename, 'r')
