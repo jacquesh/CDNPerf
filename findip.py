@@ -6,6 +6,9 @@ import requests
 import psutil
 from time import sleep
 
+# Set this to subprocess.DEVNULL for clean output, None for verbose output
+verboseOutputTarget = subprocess.DEVNULL
+
 if sys.platform == 'win32':
     dumptool = 'windump'
     traceTool = 'tracert'
@@ -15,14 +18,14 @@ else:
 
 
 def getPrimaryNetworkDevice():
-    deviceListLines = subprocess.Popen([dumptool, '-D'], stdout=subprocess.PIPE).stdout.readlines()
+    deviceListLines = subprocess.Popen([dumptool, '-D'], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.readlines()
     deviceCount = len(deviceListLines)
     packetSniffProcList = []
     for deviceID in range(deviceCount):
-        packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID + 1), 'icmp'])
+        packetSniffProc = subprocess.Popen([dumptool, '-n', '-c 1', '-i %s' % str(deviceID + 1), 'icmp'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
         packetSniffProcList.append(packetSniffProc)
 
-    subprocess.Popen(['ping', 'www.google.com']).wait()
+    subprocess.Popen(['ping', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
     validIDList = []
     for deviceID in range(deviceCount):
         if packetSniffProcList[deviceID].poll() is not None:
@@ -41,7 +44,7 @@ def getPrimaryNetworkDevice():
 
 
 def getLocalIP():
-    ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE).stdout.readlines()
+    ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.readlines()
     localIP = '(Unknown)'
     for line in ipconfigLines:
         lineStr = str(line.strip())
@@ -52,7 +55,7 @@ def getLocalIP():
 
 
 def getContentURL(targetURL):
-    return str(subprocess.Popen(['youtube-dl', '-g', targetURL], stdout=subprocess.PIPE).stdout.read())
+    return str(subprocess.Popen(['youtube-dl', '-g', targetURL], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.read())
 
 
 def getHostFromURL(targetURL):
@@ -70,7 +73,7 @@ def getIPFromHost(targetHost):
 
 
 def getContentIP(targetURL, localIP, networkDeviceID):
-    downloadProcess = subprocess.Popen(['youtube-dl', targetURL])
+    downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
     -n stops it from resolving hostnames (which makes it much faster and we only want IPs anyways)
@@ -82,7 +85,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
     Specifying tcp just makes it filter out everything that isn't sent via TCP
     """
     dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 3000', 'tcp']
-    dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE)
+    dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE, stderr=verboseOutputTarget)
     dumpOutput = dumpProcess.stdout.readlines()
     downloadProcess.kill()
 
