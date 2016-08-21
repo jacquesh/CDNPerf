@@ -266,7 +266,7 @@ def removePartFiles(downloadFilename):
     currentDir = os.getcwd()
     files = os.listdir(currentDir)
     for file in files:
-        if file.endswith(".part") or ".part-" in file or file == downloadFilename:
+        if file.endswith(".part") or file == downloadFilename or ".part-" in file:
             os.remove(os.path.join(currentDir, file))
 
 
