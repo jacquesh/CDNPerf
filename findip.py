@@ -5,6 +5,7 @@ import re
 import requests
 import psutil
 import os
+import csv
 from time import sleep
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
@@ -141,21 +142,28 @@ def profileURL(targetURL, localIP, listenDeviceID):
 
     targetIPWhoisDict = whoisIP(targetIP)
     targetIPLocation = (targetIPWhoisDict["region"] + " " + targetIPWhoisDict["country"]).strip()
+    targetIPOwner = targetIPWhoisDict["org"]
     targetIPPing = pingIP(targetIP)
     targetIPRoute = traceRouteToIP(targetIP)
-    print("Target IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPWhoisDict["org"], targetIPPing, len(targetIPRoute)))
+    targetData = (targetIP, targetIPLocation, targetIPOwner, targetIPPing, len(targetIPRoute))
+    print("Target IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(targetIP, targetIPLocation, targetIPOwner, targetIPPing, len(targetIPRoute)))
 
     cdnIPWhoisDict = whoisIP(cdnIP)
     cdnIPLocation = (cdnIPWhoisDict["region"] + " " + cdnIPWhoisDict["country"]).strip()
+    cdnIPOwner = cdnIPWhoisDict["org"]
     cdnIPPing = pingIP(cdnIP)
     cdnIPRoute = traceRouteToIP(cdnIP)
-    print("CDN IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPWhoisDict["org"], cdnIPPing, len(cdnIPRoute)))
+    cdnData = (cdnIP, cdnIPLocation, cdnIPOwner, cdnIPPing, len(cdnIPRoute))
+    print("CDN IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPOwner, cdnIPPing, len(cdnIPRoute)))
 
     contentIPWhoisDict = whoisIP(contentIP)
     contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
+    contentIPOwner = contentIPWhoisDict["org"]
     contentIPPing = pingIP(contentIP)
     contentIPRoute = traceRouteToIP(contentIP)
-    print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPWhoisDict["org"], contentIPPing, len(contentIPRoute)))
+    contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute))
+    print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute)))
+    return (targetData, cdnData, contentData)
 
 
 def traceRouteToIP(url):
@@ -214,9 +222,19 @@ def run(inputFilename):
     localIP = getLocalIP()
     listenDeviceID = getPrimaryNetworkDevice()
     inputFile = open(inputFilename, 'r')
+    outputFile = open("data.csv", "w", newline="")
+    csvWriter = csv.writer(outputFile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
+    titleRow = []
+    titleRow += ["targetIP", "targetLoc", "targetOwner", "targetPing", "targetHops"]
+    titleRow += ["cdnIP", "cdnLoc", "cdnOwner", "cdnPing", "cdnHops"]
+    titleRow += ["contentIP", "contentLoc", "contentOwner", "contentPing", "contentHops"]
+    csvWriter.writerow(titleRow)
     for url in inputFile:
         targetURL = url.strip()
-        profileURL(targetURL, localIP, listenDeviceID)
+        urlMetrics = profileURL(targetURL, localIP, listenDeviceID)
+        csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2])
+    inputFile.close()
+    outputFile.close()
 
 
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
