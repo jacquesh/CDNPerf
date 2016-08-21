@@ -5,5 +5,5 @@ The focus is on comparing the performance characteristics of websites such as Yo
 ## Requirements
 ### Ubuntu
   - ```sudo apt-get build-essential traceroute tcpdump python3-dev python3-pip```
-  - ```pip install -r requirements.txt```
+  - ```pip install -r requirements.txt``` (virtual environment suggested: [link](http://stackoverflow.com/a/23842752))
   - Ensure that tcpdump has permissions to access network device: [instructions](http://askubuntu.com/a/632189) (N.B. requires reboot after the steps are complete)
