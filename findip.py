@@ -82,6 +82,11 @@ def getIPFromHost(targetHost):
 
 
 def getContentIP(targetURL, localIP, networkDeviceID):
+    downloadFilename = subprocess.check_output(['youtube-dl', '--get-filename', targetURL]).strip().decode()
+    if os.path.isfile(downloadFilename):
+        os.remove(downloadFilename)
+    if os.path.isfile(downloadFilename + ".part"):
+        os.remove(downloadFilename + ".part")
     downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
