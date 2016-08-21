@@ -28,9 +28,9 @@ def getPrimaryNetworkDevice():
         packetSniffProcList.append(packetSniffProc)
 
     if sys.platform == 'win32':
-        subprocess.Popen(['ping', '-n', '4', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
+        subprocess.Popen(['ping', '-n', '4', '8.8.8.8'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
     else:
-        subprocess.Popen(['ping', '-c', '4', '-s', '24', 'www.google.com'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
+        subprocess.Popen(['ping', '-c', '4', '-s', '24', '8.8.8.8'], stdout=verboseOutputTarget, stderr=subprocess.STDOUT).wait()
     validIDList = []
     for deviceID in range(deviceCount):
         if packetSniffProcList[deviceID].poll() is not None:
@@ -219,6 +219,11 @@ def measureExistingNetworkActivity(sleepTime = 3, thresholdRecvKBs = 100, thresh
     afterRecv = afterIoStat[1]
     if afterRecv - initialRecv > thresholdRecvKBs * 1024 * sleepTime or afterSent - initialSent > thresholdSendKBs * 1024 * sleepTime:
         print("Existing network activity detected, ensure that there is no network activity before executing")
+        sys.exit(1)
+
+    localPing = pingIP("8.8.8.8")
+    if int(localPing) > 150:
+        print("Ping to google DNS is higher than expected, ensure network is stable before executing measurement")
         sys.exit(1)
 
 
