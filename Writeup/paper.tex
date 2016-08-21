@@ -1,58 +1,80 @@
-\documentclass[10pt,twocolumn]{confpaper}
+\documentclass{sig-alternate-05-2015}
 
-\graphicspath{ {./figures/} }
-\newcommand{\system}{{\em NetASM}}
+\usepackage{graphicx}
+
+\def\sharedaffiliation{%
+\end{tabular}
+\begin{tabular}{c}}
+
+\begin{document}
+	
+	% Copyright
+	\setcopyright{acmcopyright}
+	%\setcopyright{acmlicensed}
+	%\setcopyright{rightsretained}
+	%\setcopyright{usgov}
+	%\setcopyright{usgovmixed}
+	%\setcopyright{cagov}
+	%\setcopyright{cagovmixed}
+	
+	
+	% DOI
+	\doi{n/a}
+	
+	% ISBN
+	\isbn{n/a}
 
 \date{\today}
 \title{\ttlfnt{Comparing the performance of websites and their content distribution networks}}
 \author{
-Jacques Heunis\\
-\affaddr{HNSJAC003}
-% How do you add multiple authors? >.>
+	\begin{tabular}{c}
+		% 1st. author
+		Jacques Heunis \\
+		\affaddr{University of Cape Town}\\
+		\email{hnsjac003@myuct.ac.za}
+	\end{tabular}%
+	\begin{tabular}{c}
+		% 2nd. author
+		Brian McGeorge \\
+		\affaddr{University of Cape Town}\\
+		\email{mcgbri004@myuct.ac.za}
+	\end{tabular} 
 }
 
-
-\begin{document}
-
 \maketitle
-
-\begin{sloppypar}
 
 \begin{abstract}
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
-% http://www-net.cs.umass.edu/kurose/writing/intro-style.html
+In the modern internet, 65\% of web traffic is handled by just 10 organisations \cite{Gehlen2012}. These organisations have to serve tremendous amounts of data to a large user base across the globe. Vast Content Delivery Networks (CDN) and data centres are therefore required to serve up all this content. Approximately 90\% of Google's traffic and over 50\% of Level3 and Limelight's traffic is from video content alone \cite{Gehlen2012}.
+
+Of the video streaming services on the internet, YouTube is most popular with over a billion users \cite{youtubeStats}. Everyday, YouTube generates billions of views with people watching hundreds of million of hours of content \cite{youtubeStats}. 
+
+Our aim in this paper is to investigate the performance of the CDN's that serve this content. We will examine different streaming services from a variety of South African Internet Service Providers (ISP) to examine how traffic is routed and where it comes from. In addition, we will also examine the caching behaviour of YouTube, which has local caches in South Africa. 
 
 \section{Related Work}\label{sec:related}
-\cite{reich2013modular}
+% Relevant work that has been done
+Uncovering the Big Players of the Web\\
+Dissecting Video Server Selection Strategies
+in the YouTube CDN\\
+YouTube traffic dynamics and its interplay with a tier-1 ISP: an ISP perspective\\
+When YouTube Does not Work—Analysis of QoE-Relevant Degradation in Google CDN Traffic\\
+Internet Inter-Domain Traffic\\
+YouTube Traffic Characterization: A View From the Edge\\
 
 \section{Method}\label{sec:method}
-
 \section{Data?}\label{sec:data} % How is this different from results AND method? >.>
-
+% Only seems relevent to groups who are using an existing dataset for their work
 \section{Results}\label{sec:results}
-
-\balance
 \section{Future Work}\label{sec:futurework}
 
-
-\end{sloppypar}
-
-%\vspace{-0.1in}
-%\section*{Acknowledgments}
-% Comments for people we need to acknowledge in the final version.
 
 \pagebreak
 
 \small
-%\setlength{\bibsep}{0pt}
-\setlength{\parskip}{-1pt}
-\setlength{\itemsep}{-1pt}
-% \footnotesize % SPACE
-\balance
 \bibliographystyle{abbrv}
-\bibliography{paper}
+\bibliography{paper}  % sigproc.bib is the name of the Bibliography in this case
 
 
 \end{document}
