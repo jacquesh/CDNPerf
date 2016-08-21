@@ -9,7 +9,10 @@ import csv
 from time import sleep
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
-verboseOutputTarget = subprocess.DEVNULL
+verboseOutputTarget = None
+
+# Retry attemps
+numberOfRetries = 3
 
 if sys.platform == 'win32':
     dumptool = 'windump'
@@ -83,13 +86,7 @@ def getIPFromHost(targetHost):
 
 def getContentIP(targetURL, localIP, networkDeviceID):
     downloadFilename = subprocess.check_output(['youtube-dl', '--get-filename', targetURL]).strip().decode()
-    if os.path.isfile(downloadFilename):
-        os.remove(downloadFilename)
-    if os.path.isfile(downloadFilename + ".part"):
-        os.remove(downloadFilename + ".part")
-    if os.path.isfile(downloadFilename + ".part-Init"):
-        os.remove(downloadFilename + ".part-Init")
-    downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
+
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
     -n stops it from resolving hostnames (which makes it much faster and we only want IPs anyways)
@@ -101,39 +98,53 @@ def getContentIP(targetURL, localIP, networkDeviceID):
     Specifying tcp just makes it filter out everything that isn't sent via TCP
     """
     dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 3000', 'tcp']
-    dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE, stderr=verboseOutputTarget)
-    dumpOutput = dumpProcess.stdout.readlines()
-    downloadProcess.kill()
 
-    ipMap = {}
-    ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
-    nonMatches = 0
-    for line in dumpOutput:
-        ipMatch = ipRegex.search(str(line))
-        if not ipMatch:
-            nonMatches += 1
-            continue
 
-        sourceIP = ipMatch.group(1)
-        targetIP = ipMatch.group(3)
-        if sourceIP == localIP:
-            continue
-        if sourceIP not in ipMap:
-            ipMap[sourceIP] = 1
-        else:
-            ipMap[sourceIP] += 1
+    for i in range(numberOfRetries + 1):
+        if os.path.isfile(downloadFilename):
+            os.remove(downloadFilename)
+        if os.path.isfile(downloadFilename + ".part"):
+            os.remove(downloadFilename + ".part")
+        if os.path.isfile(downloadFilename + ".part-Init"):
+            os.remove(downloadFilename + ".part-Init")
+        downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
 
-    maxIP = ''
-    maxIPCount = 0
-    for ip in ipMap:
-        if ipMap[ip] > maxIPCount:
-            maxIPCount = ipMap[ip]
-            maxIP = ip
-    if maxIPCount < (len(dumpOutput) - nonMatches) / 2:
-        print("The network trace is too noisy in order to determine the content IP")
-        sys.exit(1)
-    else:
-        return maxIP
+        dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE, stderr=verboseOutputTarget)
+        dumpOutput = dumpProcess.stdout.readlines()
+        downloadProcess.kill()
+
+        ipMap = {}
+        ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
+        nonMatches = 0
+        for line in dumpOutput:
+            ipMatch = ipRegex.search(str(line))
+            if not ipMatch:
+                nonMatches += 1
+                continue
+
+            sourceIP = ipMatch.group(1)
+            targetIP = ipMatch.group(3)
+            if sourceIP == localIP:
+                continue
+            if sourceIP not in ipMap:
+                ipMap[sourceIP] = 1
+            else:
+                ipMap[sourceIP] += 1
+
+        maxIP = ''
+        maxIPCount = 0
+        for ip in ipMap:
+            if ipMap[ip] > maxIPCount:
+                maxIPCount = ipMap[ip]
+                maxIP = ip
+        if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
+            return maxIP
+
+        # Failed to obtain content IP
+        verbosePrint("Re-trying to obtain content IP. Attempt {0} out of {1}.".format(i + 1, numberOfRetries))
+
+    # If we are unable to determine the content IP after the retry attempts, we raise a RunTime exception
+    raise RuntimeError("The network trace is too noisy in order to determine the content IP")
 
 
 def profileURL(targetURL, localIP, listenDeviceID):
@@ -221,13 +232,11 @@ def measureExistingNetworkActivity(sleepTime = 3, thresholdRecvKBs = 100, thresh
     afterSent = afterIoStat[0]
     afterRecv = afterIoStat[1]
     if afterRecv - initialRecv > thresholdRecvKBs * 1024 * sleepTime or afterSent - initialSent > thresholdSendKBs * 1024 * sleepTime:
-        print("Existing network activity detected, ensure that there is no network activity before executing")
-        sys.exit(1)
+        raise RuntimeError("Existing network activity detected, ensure that there is no network activity before executing")
 
     localPing = pingIP("8.8.8.8")
     if int(localPing) > 150:
-        print("Ping to google DNS is higher than expected, ensure network is stable before executing measurement")
-        sys.exit(1)
+        raise RuntimeError("Ping to google DNS is higher than expected, ensure network is stable before executing measurement")
 
 
 def run(inputFilename):
@@ -249,6 +258,11 @@ def run(inputFilename):
             csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2])
     inputFile.close()
     outputFile.close()
+
+
+def verbosePrint(message):
+    if verboseOutputTarget is None:
+        print(message)
 
 
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
