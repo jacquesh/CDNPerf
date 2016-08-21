@@ -102,7 +102,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
     for i in range(numberOfRetries + 1):
         if i != 0:
             # Failed to obtain content IP
-            verbosePrint("Re-trying to obtain content IP. Attempt {0} out of {1}.".format(i, numberOfRetries))
+            print("Re-trying to obtain content IP due to noisy trace. Attempt {0} out of {1}.".format(i, numberOfRetries))
 
         removePartFiles(downloadFilename)
 
