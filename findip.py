@@ -104,12 +104,8 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             # Failed to obtain content IP
             verbosePrint("Re-trying to obtain content IP. Attempt {0} out of {1}.".format(i, numberOfRetries))
 
-        if os.path.isfile(downloadFilename):
-            os.remove(downloadFilename)
-        if os.path.isfile(downloadFilename + ".part"):
-            os.remove(downloadFilename + ".part")
-        if os.path.isfile(downloadFilename + ".part-Init"):
-            os.remove(downloadFilename + ".part-Init")
+        removePartFiles(downloadFilename)
+
         downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
 
         dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE, stderr=verboseOutputTarget)
@@ -141,6 +137,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
                 maxIPCount = ipMap[ip]
                 maxIP = ip
         if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
+            removePartFiles(downloadFilename)
             return maxIP
 
     # If we are unable to determine the content IP after the retry attempts, we raise a RunTime exception
@@ -263,6 +260,14 @@ def run(inputFilename):
 def verbosePrint(message):
     if verboseOutputTarget is None:
         print(message)
+
+
+def removePartFiles(downloadFilename):
+    currentDir = os.getcwd()
+    files = os.listdir(currentDir)
+    for file in files:
+        if file.endswith(".part") or ".part-" in file or file == downloadFilename:
+            os.remove(os.path.join(currentDir, file))
 
 
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
