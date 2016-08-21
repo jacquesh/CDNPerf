@@ -9,7 +9,7 @@ import csv
 from time import sleep
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
-verboseOutputTarget = None
+verboseOutputTarget = subprocess.DEVNULL
 
 # Retry attemps
 numberOfRetries = 3
