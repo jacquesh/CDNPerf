@@ -99,8 +99,11 @@ def getContentIP(targetURL, localIP, networkDeviceID):
     """
     dumpArgs = ['-nvS', '-s 128', '-i %d' % networkDeviceID, '-c 3000', 'tcp']
 
-
     for i in range(numberOfRetries + 1):
+        if i != 0:
+            # Failed to obtain content IP
+            verbosePrint("Re-trying to obtain content IP. Attempt {0} out of {1}.".format(i, numberOfRetries))
+
         if os.path.isfile(downloadFilename):
             os.remove(downloadFilename)
         if os.path.isfile(downloadFilename + ".part"):
@@ -139,9 +142,6 @@ def getContentIP(targetURL, localIP, networkDeviceID):
                 maxIP = ip
         if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
             return maxIP
-
-        # Failed to obtain content IP
-        verbosePrint("Re-trying to obtain content IP. Attempt {0} out of {1}.".format(i + 1, numberOfRetries))
 
     # If we are unable to determine the content IP after the retry attempts, we raise a RunTime exception
     raise RuntimeError("The network trace is too noisy in order to determine the content IP")
