@@ -87,6 +87,8 @@ def getContentIP(targetURL, localIP, networkDeviceID):
         os.remove(downloadFilename)
     if os.path.isfile(downloadFilename + ".part"):
         os.remove(downloadFilename + ".part")
+    if os.path.isfile(downloadFilename + ".part-Init"):
+        os.remove(downloadFilename + ".part-Init")
     downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
     """
     We're using WinDump, a Windows port of tcpdump (available at https://www.winpcap.org/windump/)
@@ -128,7 +130,8 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             maxIPCount = ipMap[ip]
             maxIP = ip
     if maxIPCount < (len(dumpOutput) - nonMatches) / 2:
-        return None
+        print("The network trace is too noisy in order to determine the content IP")
+        sys.exit(1)
     else:
         return maxIP
 
@@ -240,9 +243,10 @@ def run(inputFilename):
     titleRow += ["contentIP", "contentLoc", "contentOwner", "contentPing", "contentHops"]
     csvWriter.writerow(titleRow)
     for url in inputFile:
-        targetURL = url.strip()
-        urlMetrics = profileURL(targetURL, localIP, listenDeviceID)
-        csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2])
+        if url.strip() != '' and not url.startswith('#'):
+            targetURL = url.strip()
+            urlMetrics = profileURL(targetURL, localIP, listenDeviceID)
+            csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2])
     inputFile.close()
     outputFile.close()
 
