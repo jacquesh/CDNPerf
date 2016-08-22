@@ -106,11 +106,27 @@ def getContentIP(targetURL, localIP, networkDeviceID):
 
         removePartFiles(downloadFilename)
 
-        downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=verboseOutputTarget, stderr=subprocess.STDOUT)
-
+        downloadProcess = subprocess.Popen(['youtube-dl', targetURL], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dumpProcess = subprocess.Popen([dumptool] + dumpArgs, stdout=subprocess.PIPE, stderr=verboseOutputTarget)
         dumpOutput = dumpProcess.stdout.readlines()
         downloadProcess.kill()
+
+        downloadSpeedOutputLine = downloadProcess.stdout.readlines()[-1].decode()
+        downloadSpeedFinalOutput = downloadSpeedOutputLine[downloadSpeedOutputLine.rfind('\r'):]
+        downloadSpeedUnits = ("B/s", "KiB/s", "MiB/s")
+        downloadKBPerSecond = -1
+        unitFactor = 1.0/1024.0 # NOTE: This is the factor for B/s, and we assume the following units are the next one up each time
+        for units in downloadSpeedUnits:
+            patternString = r"at (\d+\.?\d*)%s ETA" % units
+            downloadSpeedMatch = re.search(patternString, downloadSpeedFinalOutput)
+            if not downloadSpeedMatch:
+                unitFactor *= 1024
+                continue
+            else:
+                downloadKBPerSecond = float(downloadSpeedMatch.group(1)) * unitFactor
+                break
+        if downloadKBPerSecond == -1:
+            print("ERROR: Unable to extract download speed from final output line: %s" % downloadSpeedOutputLine)
 
         ipMap = {}
         ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
@@ -138,7 +154,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
                 maxIP = ip
         if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
             removePartFiles(downloadFilename)
-            return maxIP
+            return maxIP, downloadKBPerSecond
 
     # If we are unable to determine the content IP after the retry attempts, we raise a RunTime exception
     raise RuntimeError("The network trace is too noisy in order to determine the content IP")
@@ -152,7 +168,7 @@ def profileURL(targetURL, localIP, listenDeviceID):
     cdnHost = getHostFromURL(cdnURL)
     cdnIP = getIPFromHost(cdnHost)
 
-    contentIP = getContentIP(targetURL, localIP, listenDeviceID)
+    contentIP, contentKBPerSecond = getContentIP(targetURL, localIP, listenDeviceID)
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
           % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
 
@@ -177,7 +193,7 @@ def profileURL(targetURL, localIP, listenDeviceID):
     contentIPOwner = contentIPWhoisDict["org"]
     contentIPPing = pingIP(contentIP)
     contentIPRoute = traceRouteToIP(contentIP)
-    contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute))
+    contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute), contentKBPerSecond)
     print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute)))
     return (targetData, cdnData, contentData)
 
@@ -246,7 +262,7 @@ def run(inputFilename):
     titleRow = []
     titleRow += ["targetIP", "targetLoc", "targetOwner", "targetPing", "targetHops"]
     titleRow += ["cdnIP", "cdnLoc", "cdnOwner", "cdnPing", "cdnHops"]
-    titleRow += ["contentIP", "contentLoc", "contentOwner", "contentPing", "contentHops"]
+    titleRow += ["contentIP", "contentLoc", "contentOwner", "contentPing", "contentHops", "contentThroughput(KB/s)"]
     csvWriter.writerow(titleRow)
     for url in inputFile:
         if url.strip() != '' and not url.startswith('#'):
