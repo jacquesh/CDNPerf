@@ -270,7 +270,7 @@ def measureExistingNetworkActivity(sleepTime = 3, thresholdRecvKBs = 100, thresh
         raise RuntimeError("Existing network activity detected, ensure that there is no network activity before executing")
 
     localPing = pingIP("8.8.8.8")
-    if int(localPing) > 150:
+    if float(localPing) > 150:
         raise RuntimeError("Ping to google DNS is higher than expected, ensure network is stable before executing measurement")
 
 
