@@ -1,3 +1,7 @@
+# Root Data
+/data-*
+/urls.txt
+
 # IntelliJ
 .idea
 

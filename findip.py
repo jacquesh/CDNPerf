@@ -7,12 +7,16 @@ import psutil
 import os
 import csv
 from time import sleep
+from datetime import datetime
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
 verboseOutputTarget = subprocess.DEVNULL
 
 # Retry attemps
 numberOfRetries = 3
+
+# Number of test runs
+numberOfRuns = 3
 
 if sys.platform == 'win32':
     dumptool = 'windump'
@@ -81,7 +85,14 @@ def getHostFromURL(targetURL):
 
 
 def getIPFromHost(targetHost):
-    return socket.gethostbyname(targetHost)
+    for i in range(numberOfRetries + 1):
+        try:
+            return socket.gethostbyname(targetHost.strip())
+        except socket.gaierror:
+            if i < numberOfRetries:
+                continue
+            else:
+                raise
 
 
 def getContentIP(targetURL, localIP, networkDeviceID):
@@ -194,18 +205,18 @@ def profileURL(targetURL, localIP, listenDeviceID):
     contentIPPing = pingIP(contentIP)
     contentIPRoute = traceRouteToIP(contentIP)
     contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute), contentKBPerSecond)
-    print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute)))
+    print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}\n".format(contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute)))
     return (targetData, cdnData, contentData)
 
 
 def traceRouteToIP(url):
     """Executes a trace route to the argument url or ip.
-    It does not resolve hostnames, is limited to maximum 20 hops
-    and will wait 500 milliseconds before considering a packet dropped."""
+    It does not resolve hostnames, is limited to maximum 30 hops
+    and will wait a maximum of 1500 milliseconds before moving to the next hop."""
     if sys.platform == 'win32':
-        traceOutput = subprocess.check_output([traceTool, "-d", "-h", "20", "-w", "500", url])
+        traceOutput = subprocess.check_output([traceTool, "-d", "-h", "30", "-w", "1500", url])
     else:
-        traceOutput = subprocess.check_output([traceTool, "-n", "-m", "20", "-w", "0.5", url, "32"])
+        traceOutput = subprocess.check_output([traceTool, "-n", "-m", "30", "-w", "1.5", url, "32"])
     traceStr = traceOutput.decode()
     hopExpr = re.compile(r'^\s+\d+')
     traceLines = [l for l in traceStr.split(os.linesep) if hopExpr.match(l) is not None]
@@ -213,8 +224,19 @@ def traceRouteToIP(url):
 
 
 def whoisIP(ip):
-    whoisRequest = requests.get("http://ipinfo.io/{0}/json".format(ip))
-    return whoisRequest.json()
+    for i in range(numberOfRetries + 1):
+        whoisRequest = requests.get("http://ipinfo.io/{0}/json".format(ip))
+        whoisJson = whoisRequest.json()
+        if "country" in whoisJson and "org" in whoisJson:
+            if "region" in whoisJson:
+                return whoisJson
+            else:
+                whoisJson["region"] = ""
+                return whoisJson
+
+        sleep(1)
+
+    raise RuntimeError("Unable to successfully execute whois on {0}".format(ip))
 
 
 def pingIP(ip):
@@ -256,20 +278,25 @@ def run(inputFilename):
     measureExistingNetworkActivity()
     localIP = getLocalIP()
     listenDeviceID = getPrimaryNetworkDevice()
-    inputFile = open(inputFilename, 'r')
-    outputFile = open("data.csv", "w", newline="")
+    with open(inputFilename) as f:
+        content = f.readlines()
+
+    currentTime = datetime.now().strftime('%H-%M-%S_%d-%m-%Y')
+    outputFile = open("data-{0}.csv".format(currentTime), "w", newline="")
     csvWriter = csv.writer(outputFile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
     titleRow = []
     titleRow += ["targetIP", "targetLoc", "targetOwner", "targetPing", "targetHops"]
     titleRow += ["cdnIP", "cdnLoc", "cdnOwner", "cdnPing", "cdnHops"]
     titleRow += ["contentIP", "contentLoc", "contentOwner", "contentPing", "contentHops", "contentThroughput(KB/s)"]
+    titleRow += ["targetURL"]
     csvWriter.writerow(titleRow)
-    for url in inputFile:
-        if url.strip() != '' and not url.startswith('#'):
-            targetURL = url.strip()
-            urlMetrics = profileURL(targetURL, localIP, listenDeviceID)
-            csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2])
-    inputFile.close()
+    for i in range(numberOfRuns):
+        print("Run {0} of {1}".format(i+1, numberOfRuns))
+        for url in content:
+            if url.strip() != '' and not url.startswith('#'):
+                targetURL = url.strip()
+                urlMetrics = profileURL(targetURL, localIP, listenDeviceID)
+                csvWriter.writerow(urlMetrics[0] + urlMetrics[1] + urlMetrics[2] + (targetURL,))
     outputFile.close()
 
 
