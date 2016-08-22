@@ -1,0 +1,4 @@
+targetIP,targetLoc,targetOwner,targetPing,targetHops,cdnIP,cdnLoc,cdnOwner,cdnPing,cdnHops,contentIP,contentLoc,contentOwner,contentPing,contentHops,contentThroughput(KB/s),targetURL
+216.58.223.46,California US,AS15169 Google Inc.,32,10,197.84.135.13,ZA,AS10474 Dimension Data (Pty) Ltd - Optinet,11,8,173.194.153.44,California US,AS15169 Google Inc.,198,15,179.97,https://www.youtube.com/watch?v=ZJQGosSYOjo
+216.58.223.46,California US,AS15169 Google Inc.,32,10,197.84.135.13,ZA,AS10474 Dimension Data (Pty) Ltd - Optinet,11,8,197.84.135.13,ZA,AS10474 Dimension Data (Pty) Ltd - Optinet,17,8,205.52,https://www.youtube.com/watch?v=ZJQGosSYOjo
+216.58.223.46,California US,AS15169 Google Inc.,33,10,197.84.135.13,ZA,AS10474 Dimension Data (Pty) Ltd - Optinet,11,8,197.84.135.13,ZA,AS10474 Dimension Data (Pty) Ltd - Optinet,10,8,204.84,https://www.youtube.com/watch?v=ZJQGosSYOjo

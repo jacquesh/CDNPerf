@@ -1,0 +1,1 @@
+This is a small test to see if we load a video from another ISP, if it will be served up from the Google Cache in South Africa in the case of Telkom, who was the first one to serve up the unpopular YouTube video in TestCase1

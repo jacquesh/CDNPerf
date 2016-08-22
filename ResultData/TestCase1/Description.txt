@@ -1,0 +1,3 @@
+This test case tests all ISP's on YouTube, Twitch and SoundCloud - see urls.txt
+The videos remain static for all tests. This is done to see how the CDN will serve up the unpopular video once it is cached.
+See TestingOrder.txt to see the order the ISPs were tested in.

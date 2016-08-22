@@ -1,0 +1,4 @@
+targetIP,targetLoc,targetOwner,targetPing,targetHops,cdnIP,cdnLoc,cdnOwner,cdnPing,cdnHops,contentIP,contentLoc,contentOwner,contentPing,contentHops,contentThroughput(KB/s),targetURL
+216.58.223.14,California US,AS15169 Google Inc.,33,11,105.187.241.77,ZA,AS37457 Telkom SA Ltd.,9,7,173.194.128.76,California US,AS15169 Google Inc.,38,11,205.47,https://www.youtube.com/watch?v=ZJQGosSYOjo
+216.58.223.46,California US,AS15169 Google Inc.,33,11,105.187.241.77,ZA,AS37457 Telkom SA Ltd.,9,7,105.187.241.77,ZA,AS37457 Telkom SA Ltd.,31,7,204.56,https://www.youtube.com/watch?v=ZJQGosSYOjo
+216.58.223.46,California US,AS15169 Google Inc.,33,11,105.187.241.77,ZA,AS37457 Telkom SA Ltd.,9,7,105.187.241.77,ZA,AS37457 Telkom SA Ltd.,51,7,204.06,https://www.youtube.com/watch?v=ZJQGosSYOjo
