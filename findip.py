@@ -224,9 +224,9 @@ def traceRouteToIP(url):
     if sys.platform == 'win32':
         traceOutput = subprocess.check_output([traceTool, "-d", "-h", "30", "-w", "1500", url])
     else:
-        traceOutput = subprocess.check_output([traceTool, "-n", "-m", "30", "-w", "1.5", url, "32"])
+        traceOutput = subprocess.check_output([traceTool,"--icmp" , "-n", "-m", "30", "-w", "1.5", url, "32"])
     traceStr = traceOutput.decode()
-    hopExpr = re.compile(r'^\s+\d+')
+    hopExpr = re.compile(r'^\s*\d+')
     traceLines = [l for l in traceStr.split(os.linesep) if hopExpr.match(l) is not None]
     return traceLines
 
