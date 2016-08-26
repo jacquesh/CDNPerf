@@ -79,7 +79,7 @@ Our tool is written using Python 3, but makes use of a number of third-party too
 
 For each input URL we run youtube-dl and ask that it simply return the URL of the actual content and exit. Both URLs are resolved to IP addresses and stored for later measurement. We then run tcpdump, specifying that it will terminate after 3000 packets have been received, and then run youtube-dl again. This time we let youtube-dl actually download the media file, allowing tcpdump to the required 3000 packets and then terminate. At this point we can kill the youtube-dl process and just consider its output. First, we look at the last line of output from youtube-dl in order to get the throughput that the content was transmitted at. This does mean that we rely on youtube-dl's measurements being accurate, but previous attempts to measure throughput ourselves proved inaccurate as youtube-dl does some work before downloading (for example to get the CDN URL from the webpage).
 
-Next we go through every packet that tcpdump captured and find the IP that sent us the most packets. We consider that to be the IP that the content actually came from, as long as more than one third of the captured packets came from that IP. Now we have an IP for the website, the CDN, and the actual content, and we run ping and traceroute, as well as querying ipinfo.io for all three of these.
+Next we go through every packet that tcpdump captured and find the IP that sent us the most packets. We consider that to be the IP that the content actually came from, as long as more than one third of the captured packets came from that IP. In the event that no single IP was the source of more than one third of the captured packets, we retry up to three times. This retry behaviour gives our test greater stability in the face of existing network traffic. Now we have an IP for the website, the CDN, and the actual content, and we run ping and traceroute, as well as querying ipinfo.io for all three of these.
 
 In order to reduce the chance of our results being affected by other applications that might be using the network, we first listen to the existing traffic on the network when the tool first starts up. If there is more than 100KB/s of incoming traffic or more than 30KB/s of outgoing traffic, we prompt the user to reduce network traffic and do not proceed with the test. This gives our results greater accuracy and repeatability as it prevents us from running the experiment when there is already high-network usage, which would skew the data.
 
@@ -90,10 +90,202 @@ As mentioned in Section \ref{sec:intro}, Youtube is one of the most popular vide
 
 Of particular interest is the effect of caching on the performance of Youtube videos. It is widely known that there are Google caches in South Africa and that local ISPs have their own caches. For this reason we specifically included performance evaluations for Youtube videos that are unpopular or have very few views. To find such videos, we manually looked through the ``unknownvideos'' section of Reddit\footnote{``/r/unknownvideos - Watch something new'', available at https://www.reddit.com/r/unknownvideos}.
 
-\section{Data?}\label{sec:data} % How is this different from results AND method? >.>
-\section{Results}\label{sec:results}
-\section{Future Work}\label{sec:futurework}
+\begin{itemize}
+	\item Different ISPs? \\
+	\item All the same location - CONSISTENCY
+\end{itemize}
 
+\section{Results}\label{sec:results}
+\subsection{Home network}
+We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929}.
+Below are the results of each run, averaged across ISPs:
+\vspace{1em} \\
+Ping: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 39  & 35  & 56  \\ \hline
+  & Popular Youtube   & 60  & 14  & 14  \\ \hline
+  & Soundcloud        & 161 & 162 & 184 \\ \hline
+  & Twitch.tv         & 198 & 159 & 172 \\ \hline
+2 & Unpopular Youtube & 45  & 14  & 17  \\ \hline
+  & Popular Youtube   & 63  & 14  & 31  \\ \hline
+  & Soundcloud        & 161 & 160 & 165 \\ \hline
+  & Twitch.tv         & 193 & 159 & 181 \\ \hline
+3 & Unpopular Youtube & 31  & 17  & 14  \\ \hline
+  & Popular Youtube   & 31  & 23  & 18  \\ \hline
+  & Soundcloud        & 179 & 171 & 160 \\ \hline
+  & Twitch.tv         & 184 & 159 & 161 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Number of hops: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 10 & 7  & 10 \\ \hline
+  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+  & Soundcloud        & 13 & 18 & 18 \\ \hline
+  & Twitch.tv         & 14 & 14 & 15 \\ \hline
+2 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
+  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+  & Soundcloud        & 13 & 18 & 18 \\ \hline
+  & Twitch.tv         & 13 & 15 & 12 \\ \hline
+3 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
+  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+  & Soundcloud        & 13 & 18 & 18 \\ \hline
+  & Twitch.tv         & 13 & 15 & 13 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Throughput (KB/s): \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Content \\ \hline
+1 & Unpopular Youtube & 197.8 \\ \hline
+  & Popular Youtube   & 202.6 \\ \hline
+  & Soundcloud        & 197.9 \\ \hline
+  & Twitch.tv         & 201.2 \\ \hline
+2 & Unpopular Youtube & 201.9 \\ \hline
+  & Popular Youtube   & 197.8 \\ \hline
+  & Soundcloud        & 201.3 \\ \hline
+  & Twitch.tv         & 203.1 \\ \hline
+3 & Unpopular Youtube & 202.8 \\ \hline
+  & Popular Youtube   & 200.4 \\ \hline
+  & Soundcloud        & 203.6 \\ \hline
+  & Twitch.tv         & 204.9 \\ \hline
+\end{tabular}
+
+TODO: Table of "offset from median" of the metrics for each ISP
+
+
+\subsection{UCT Network}
+For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet.
+
+Note that some of the throughput data points are missing, this is because we measure throughput as youtube-dl downloads and in those cases the download finished before we could get a good measure.
+\subsubsection{Test case 1}
+The first test case used the following media URLs:
+\begin{itemize}
+	\item Unpopular Youtube video: \\ https://www.youtube.com/watch?v=nKETYT-2NY8
+	\item Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0
+	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
+	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
+\end{itemize}
+The results are tabulated below:
+\vspace{1em} \\
+Ping: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 18  & 49  & 44  \\ \hline
+  & Popular Youtube   & 45  & 19  & 18  \\ \hline
+  & Soundcloud        & 179 & 148 & 154 \\ \hline
+  & Twitch.tv         & 148 & 155 & 148 \\ \hline
+2 & Unpopular Youtube & 21  & 19  & 19  \\ \hline
+  & Popular Youtube   & 19  & 26  & 19  \\ \hline
+  & Soundcloud        & 148 & 149 & 148 \\ \hline
+  & Twitch.tv         & 148 & 148 & 148 \\ \hline
+3 & Unpopular Youtube & 3   & 19  & 19  \\ \hline
+  & Popular Youtube   & 2   & 45  & 68  \\ \hline
+  & Soundcloud        & 148 & 148 & 148 \\ \hline
+  & Twitch.tv         & 151 & 154 & 148 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Number of hops: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Throughput: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Content \\ \hline
+1 & Unpopular Youtube & 1484.8  \\ \hline
+  & Popular Youtube   & 8560.6  \\ \hline
+  & Soundcloud        & 1351.7  \\ \hline
+  & Twitch.tv         & 11284.5 \\ \hline
+2 & Unpopular Youtube & 7690.2  \\ \hline
+  & Popular Youtube   & 8161.3  \\ \hline
+  & Soundcloud        & -       \\ \hline
+  & Twitch.tv         & 11264.0 \\ \hline
+3 & Unpopular Youtube & 7598.1  \\ \hline
+  & Popular Youtube   & 9543.7  \\ \hline
+  & Soundcloud        & -       \\ \hline  
+  & Twitch.tv         & 11233.3 \\ \hline
+\end{tabular}
+
+\subsubsection{Test case 2}
+The second test case used the following media URLs:
+\begin{itemize}
+	\item Unpopular Youtube video: \\ https://www.youtube.com/watch?v=nKETYT-2NY8
+	\item Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0
+	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
+	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
+\end{itemize}
+The results are tabulated below:
+\vspace{1em} \\
+Ping: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 4   & 19  & 188 \\ \hline
+  & Popular Youtube   & 4   & 19  & 21  \\ \hline
+  & Twitch.tv         & 148 & 154 & 148 \\ \hline
+  & Soundcloud        & 148 & 148 & 0   \\ \hline
+2 & Unpopular Youtube & 3   & 47  & 19  \\ \hline
+  & Popular Youtube   & 4   & 20  & 19  \\ \hline
+  & Twitch.tv         & 172 & 154 & 0   \\ \hline
+  & Soundcloud        & 148 & 149 & 149 \\ \hline
+3 & Unpopular Youtube & 4   & 33  & 19  \\ \hline
+  & Popular Youtube   & 3   & 20  & 18  \\ \hline
+  & Twitch.tv         & 149 & 148 & 0   \\ \hline
+  & Soundcloud        & 148 & 148 & 148 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Number of hops: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Website & CDN & Content \\ \hline
+1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 1 \\ \hline
+2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 1 \\ \hline
+3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+  & Soundcloud        & 9 & 9 & 1 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Throughput: \\
+\begin{tabular}{|l|l|c|c|c|} \hline
+Run & Source & Content \\ \hline
+1 & Unpopular Youtube & 190.9   \\ \hline
+  & Popular Youtube   & 8048.6  \\ \hline
+  & Twitch.tv         & 10526.7 \\ \hline
+  & Soundcloud        & 1341.4  \\ \hline
+2 & Unpopular Youtube & 9513.0  \\ \hline
+  & Popular Youtube   & 8335.4  \\ \hline
+  & Twitch.tv         & 11397.1 \\ \hline
+  & Soundcloud        & -       \\ \hline
+3 & Unpopular Youtube & 9840.6  \\ \hline
+  & Popular Youtube   & 7260.2  \\ \hline
+  & Twitch.tv         & 11274.2 \\ \hline  
+  & Soundcloud        & -       \\ \hline
+\end{tabular}
+
+\section{Future Work}\label{sec:futurework}
+\begin{itemize}
+	\item Streaming (e.g incorporate youtube life or twitch non-vods)
+	\item Video content vs video adverts
+	\item Test from multiple locations
+\end{itemize}
 
 \pagebreak
 
