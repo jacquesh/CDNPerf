@@ -51,9 +51,9 @@ In the modern internet, 65\% of web traffic is handled by just 10 organisations 
 
 Of the video streaming services on the internet, YouTube is most popular with over a billion users \cite{youtubeStats}. Everyday, YouTube generates billions of views with people watching hundreds of million of hours of content \cite{youtubeStats}. With new content constantly getting generated around the world, caching strategies are required so that this content can be served up at a high throughput from as close as possible to the user. ISPs play a critical role in this through their peering policies and by providing their own CDNs for various content \cite{Labovitz:2010:IIT:2043164.1851194}.
 
-Our aim in this paper is to investigate the performance of the CDN's that serve this content. We will examine different streaming services across a variety of South African Internet Service Providers (ISP) to examine how traffic is routed and where it comes from. In addition, we will also examine the caching behaviour of YouTube, which has local caches in South Africa. We have developed a tool which automates much of the aforementioned. It can take a list of URLs to content at a streaming service and record various performance metrics regarding how the content is delivered to the end-user.
+Our aim in this paper is to investigate the performance of the CDN's that serve this content. We will examine different streaming services across a variety of South African Internet Service Providers (ISP) to examine how traffic is routed and where it comes from. In addition, we will also examine the caching behaviour of YouTube, which has local caches in South Africa. We have developed a tool which automates many of the aforementioned measurements. It can take a list of URLs to content on a streaming service and record various performance metrics regarding how the content is delivered to the end-user.
 
-Section \ref{sec:related} will examine related work in measuring the performance of streaming services and studies which investigate the behaviour of CDNs for multimedia streaming services. Section \ref{sec:tool} describes the tool that was developed and its features. Section \ref{sec:method} describes the steps we followed in capturing our results. Section \ref{sec:results} presents the results and infers its meaning.
+Section \ref{sec:related} will examine related work in measuring the performance of streaming services and studies which investigate the behaviour of CDNs for multimedia streaming services. Section \ref{sec:method} describes the tool that we developed and details the steps we followed in using it to capture our results. Section \ref{sec:results} presents the results and a discussion thereof.
 
 
 
@@ -72,6 +72,8 @@ YouTube Traffic Characterization: A View From the Edge\\
 % 	- add a section on the tool, what it does and how it tries to ensure accuracy and repeatability in our dynamic environment (throughput and ping tests beforehand, repeating each run 3 times, re-try logic to make the code robust etc. etc. Just sell it!)
 % 	- (Sub?)Section on the data we collect and why this information is useful for our study
 \section{Method}\label{sec:method}
+We
+
 \section{Data?}\label{sec:data} % How is this different from results AND method? >.>
 \section{Results}\label{sec:results}
 \section{Future Work}\label{sec:futurework}
