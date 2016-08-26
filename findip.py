@@ -122,13 +122,15 @@ def getContentIP(targetURL, localIP, networkDeviceID):
         dumpOutput = dumpProcess.stdout.readlines()
         downloadProcess.kill()
 
-        downloadSpeedOutputLine = downloadProcess.stdout.readlines()[-1].decode()
+        downloadLines = downloadProcess.stdout.readlines()
+        downloadSpeedOutputLine = downloadLines[-1].decode()
         downloadSpeedFinalOutput = downloadSpeedOutputLine[downloadSpeedOutputLine.rfind('\r'):]
+
         downloadSpeedUnits = ("B/s", "KiB/s", "MiB/s")
         downloadKBPerSecond = -1
         unitFactor = 1.0/1024.0 # NOTE: This is the factor for B/s, and we assume the following units are the next one up each time
         for units in downloadSpeedUnits:
-            patternString = r"at (\d+\.?\d*)%s ETA" % units
+            patternString = r"(\d+\.?\d*)%s ETA" % units
             downloadSpeedMatch = re.search(patternString, downloadSpeedFinalOutput)
             if not downloadSpeedMatch:
                 unitFactor *= 1024
@@ -136,8 +138,12 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             else:
                 downloadKBPerSecond = float(downloadSpeedMatch.group(1)) * unitFactor
                 break
+
         if downloadKBPerSecond == -1:
-            print("ERROR: Unable to extract download speed from final output line: %s" % downloadSpeedOutputLine)
+            print("{0} - ERROR: Unable to extract download speed from final output line.".format(downloadSpeedOutputLine))
+
+        verbosePrint(downloadSpeedOutputLine)
+        verbosePrint("Download Speed: {0}".format(downloadKBPerSecond))
 
         ipMap = {}
         ipRegex = re.compile(r'((\d+\.){3}\d+)\.\d+ > ((\d+\.){3}\d+)\.\d+')
@@ -163,7 +169,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             if ipMap[ip] > maxIPCount:
                 maxIPCount = ipMap[ip]
                 maxIP = ip
-        if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
+        if maxIPCount > (len(dumpOutput) - nonMatches) / 3:
             removePartFiles(downloadFilename)
             return maxIP, downloadKBPerSecond
 
@@ -183,6 +189,13 @@ def profileURL(targetURL, localIP, listenDeviceID):
     print('%s (%s) refers to a CDN at %s (%s) and the actual content came from %s'
           % (targetHost, targetIP, cdnHost, cdnIP, contentIP))
 
+    contentIPWhoisDict = whoisIP(contentIP)
+    contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
+    contentIPOwner = contentIPWhoisDict["org"]
+    contentIPPing = pingIP(contentIP)
+    contentIPRoute = traceRouteToIP(contentIP)
+    contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute), contentKBPerSecond)
+
     targetIPWhoisDict = whoisIP(targetIP)
     targetIPLocation = (targetIPWhoisDict["region"] + " " + targetIPWhoisDict["country"]).strip()
     targetIPOwner = targetIPWhoisDict["org"]
@@ -199,12 +212,7 @@ def profileURL(targetURL, localIP, listenDeviceID):
     cdnData = (cdnIP, cdnIPLocation, cdnIPOwner, cdnIPPing, len(cdnIPRoute))
     print("CDN IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}".format(cdnIP, cdnIPLocation, cdnIPOwner, cdnIPPing, len(cdnIPRoute)))
 
-    contentIPWhoisDict = whoisIP(contentIP)
-    contentIPLocation = (contentIPWhoisDict["region"] + " " + contentIPWhoisDict["country"]).strip()
-    contentIPOwner = contentIPWhoisDict["org"]
-    contentIPPing = pingIP(contentIP)
-    contentIPRoute = traceRouteToIP(contentIP)
-    contentData = (contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute), contentKBPerSecond)
+
     print("Content IP ({0} - RTT:{3}ms - {4} hops) location is in {1} and managed by {2}\n".format(contentIP, contentIPLocation, contentIPOwner, contentIPPing, len(contentIPRoute)))
     return (targetData, cdnData, contentData)
 
