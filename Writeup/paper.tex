@@ -73,11 +73,18 @@ YouTube Traffic Characterization: A View From the Edge\\
 % 	- (Sub?)Section on the data we collect and why this information is useful for our study
 \section{Method}\label{sec:method}
 \subsection{Measurement and tools}
+% Possible improvements / modifications:
+% "owner of the web page" -> organisation hosting the webpage?
+% Why 3000 packets?
+% We also do a ping test at the start to ensure that latency is in a reasonable range (< 150 ms)
+%
+%
+
 To measure the performance of CDNs, we have created a tool to automatically capture various quantitative and qualitative performance metrics when given a list of URLs to online video or audio content. In order to compare the performance of CDNs to that of the websites that present the content, we measure 2 primary quantitative metrics: Ping or Round-trip-time and the number of hops required to reach the server. We also measure the throughput to the CDN. To gain further insight into the potential causes for variances in performance, we also take note of the location and owner of the web page and CDN IPs.
 
 Our tool is written using Python 3, but makes use of a number of third-party tools and services. It makes use of the youtube-dl\footnote{youtube-dl: available at https://rg3.github.io/youtube-dl/} tool to download multimedia content (which is used to measure bandwidth, as detailed below), and uses tcpdump to passively capture network traffic (on Windows we use WinDump which is a Windows port of tcpdump, but for the purposes of this report we will refer to tcpdump). The ipinfo.io service\footnote{ipinfo: available at http://ipinfo.io/} is used to gather information about the registered owners of the website and CDN IP addresses.
 
-For each input URL we run youtube-dl and ask that it simply return the URL of the actual content and exit. Both URLs are resolved to IP addresses and stored for later measurement. We then run tcpdump, specifying that it will terminate after 3000 packets have been received, and then run youtube-dl again. This time we let youtube-dl actually download the media file, allowing tcpdump to the required 3000 packets and then terminate. At this point we can kill the youtube-dl process and just consider its output. First, we look at the last line of output from youtube-dl in order to get the throughput that the content was transmitted at. This does mean that we rely on youtube-dl's measurements being accurate, but previous attempts to measure throughput ourselves proved inaccurate as youtube-dl does some work before downloading (for example to get the CDN URL from the webpage).
+For each input URL we run youtube-dl and ask that it simply return the URL of the actual content and exit. Both URLs are resolved to IP addresses and stored for later measurement. We then run tcpdump, specifying that it will terminate after 3000 packets have been received, and then run youtube-dl again. This time we let youtube-dl actually download the media file, allowing tcpdump to capture the required 3000 packets and then terminate. At this point we can kill the youtube-dl process and just consider its output. First, we look at the last line of output from youtube-dl in order to get the throughput that the content was transmitted at. This does mean that we rely on youtube-dl's measurements being accurate, but previous attempts to measure throughput ourselves proved inaccurate as youtube-dl does some work before downloading (for example to get the CDN URL from the webpage).
 
 Next we go through every packet that tcpdump captured and find the IP that sent us the most packets. We consider that to be the IP that the content actually came from, as long as more than one third of the captured packets came from that IP. In the event that no single IP was the source of more than one third of the captured packets, we retry up to three times. This retry behaviour gives our test greater stability in the face of existing network traffic. Now we have an IP for the website, the CDN, and the actual content, and we run ping and traceroute, as well as querying ipinfo.io for all three of these.
 
@@ -97,6 +104,12 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
+% We are missing the caching train in this section wrt unpopular video (since the same video is used)
+% Telkom is first -> EU -> Telkom -> Telkom
+% Then ISP 2 is second -> Google Cache -> ISP 2 -> ISP 2
+% Then ISP 3 is third -> Google Cache -> ISP 3 -> ISP 3
+% Then ISP 4 is fourth but uses same backbone as ISP 3 so -> ISP 3 -> ISP 3 -> ISP 3 etc.
+
 We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929}.
 Below are the results of each run, averaged across ISPs:
 \vspace{1em} \\
