@@ -169,7 +169,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             if ipMap[ip] > maxIPCount:
                 maxIPCount = ipMap[ip]
                 maxIP = ip
-        if maxIPCount > (len(dumpOutput) - nonMatches) / 3:
+        if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
             removePartFiles(downloadFilename)
             return maxIP, downloadKBPerSecond
 
