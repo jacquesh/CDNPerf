@@ -55,17 +55,14 @@ Our aim in this paper is to investigate the performance of the CDN's that serve 
 
 Section \ref{sec:related} will examine related work in measuring the performance of streaming services and studies which investigate the behaviour of CDNs for multimedia streaming services. Section \ref{sec:method} describes the tool that we developed and details the steps we followed in using it to capture our results. Section \ref{sec:results} presents the results and a discussion thereof.
 
-
-
 \section{Related Work}\label{sec:related}
 % Relevant work that has been done
-Uncovering the Big Players of the Web\\
-Dissecting Video Server Selection Strategies
-in the YouTube CDN\\
-YouTube traffic dynamics and its interplay with a tier-1 ISP: an ISP perspective\\
-When YouTube Does not Work - Analysis of QoE-Relevant Degradation in Google CDN Traffic\\
-Internet Inter-Domain Traffic\\
-YouTube Traffic Characterization: A View From the Edge\\
+There have been a number of studies on how the performance of video streaming affects the quality of experience (QoE) for the user. Casas \textit{et al.} \cite{6975242} took an ISP traffic view by analysing 1 months worth of YouTube packet flows from a large European ISP. The study challenges Google's Video Quality Report \footnote{http://www.google.com/get/videoqualityreport/} as it only considers ISP and access link bottlenecks as the root cause of bad user experience \cite{6975242}. Casas \textit{et al.} \cite{6975242} presents how poor content server selection by Google resulted in a large scale reduction for in QoE for many YouTube users. Fiadino \textit{et al.} \cite{6932930} developed an tool for ISP's to detect unexpected cache-selection events and changes in the traffic delivered by CDNs. As such, anomalous CDN behaviour can have a large impact for ISP's carrying the traffic and end-users \cite{6932930, Plissonneau:2012:LVH:2155555.2155588}. Zhu \textit{et al.} \cite{6233056} developed LatLong, a tool for CDN's to diagnose large latency increases on the network through passive measurement of traffic and routing. Results from analysing a one month's data from Google's CDN show that more than 40\% of latency increases coincide with interdomain routing changes and more than one-third involve a shift in traffic to different servers. Juluri \textit{et al.} \cite{6038496} developed a tool to measure playback quality on an end-host. The tool captures various metrics such as delay towards the server, download
+rates, and buffering duration \cite{6038496}. These can then be used to measure Quality of Experience.
+
+In 2007 Gill \textit{et al.} \cite{Gill:2007:YTC:1298306.1298310} studied the usage patterns, file properties, popularity and transfer behaviour of YouTube. Its findings found that caching could be used effectively to scale Web 2.0 applications such as YouTube \cite{Gill:2007:YTC:1298306.1298310}.In 2011, Torres \textit{et al.} \cite{5961681} analysed a week-long dataset collected from the edge of five networks. The study determined the location of YouTube servers and revealed that round trip time (RTT) is not the only factor determining video server selection \cite{5961681}. Other factors that were found to affect server selection were load-balancing, the DNS server used and popularity of the accessed video \cite{5961681}.
+
+Labovitz \textit{et al.} \cite{Labovitz:2010:IIT:2043164.1851194} analysed 2 years worth of internet traffic through 110 different cable operators, international transit backbones, regional networks and content providers. The study found that there was a significant rise in video traffic and that the majority of inter-domain traffic flows directly between large content providers, CDNs and consumer networks.
 
 \section{Method}\label{sec:method}
 \subsection{Measurement and tools}
