@@ -106,6 +106,8 @@ In the case of institutional networks, all our measurements were done while conn
 % Then ISP 4 is fourth but uses same backbone as ISP 3 so -> ISP 3 -> ISP 3 -> ISP 3 etc.
 
 We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929}.
+
+\subsubsection{Results across ISPs}
 Below are the results of each run, averaged across ISPs:
 \vspace{1em} \\
 Ping: \\
@@ -176,6 +178,51 @@ Run & Afrihost & Axxess & Cybersmart & Telkom & WebAfrica \\ \hline
 These results are expected if we consider that the tests were done by doing 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess and finally Afrihost. On the first run (which just happens to be via Telkom) the video is not cached, so we get it from a server that is outside South Africa. This causes it to get cached however, causing the following runs to serve the content from a server that is much closer to the user.
 
 One more thing to notice is that in most cases, the ping to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
+
+\subsubsection{Results across runs}
+To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs:
+\vspace{1em} \\
+Offset from median ping to website (ms, lower is better): \\
+\begin{tabular}{|l|c|c|c|c|c|} \hline
+ & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+\small{Unpopular YT} & 9  & 23  & 2  & -1  & -3 \\ \hline
+Popular YT           & 11 & 88  & 1  & -1  & -6 \\ \hline
+Soundcloud           & 10 & 0   & -5 & -3  & 53 \\ \hline
+Twitch.tv            & 26 & 6   & 14 & -9  & 41 \\ \hline
+Total                & 56 & 117 & 12 & -14 & 85 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Offset from median ping to CDN (ms, lower is better): \\
+\begin{tabular}{|l|c|c|c|c|c|} \hline
+ & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+\small{Unpopular YT} & 35 & -1 & 0  & -2 & 21 \\ \hline
+Popular YT           & 0  & 0  & 0  & -2 & 28 \\ \hline
+Soundcloud           & 14 & 2  & -6 & -1 & 25 \\ \hline
+Twitch.tv            & -5 & -4 & 1  & 1  & 12 \\ \hline
+Total                & 44 & -4 & -4 & -3 & 86 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Offset from median ping to content (ms, lower is better): \\
+\begin{tabular}{|l|c|c|c|c|c|} \hline
+ & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+\small{Unpopular YT} & -5  & -5 & 3  & 56 & 15 \\ \hline
+Popular YT           & 0   & 7  & 0  & -2 & 45 \\ \hline
+Soundcloud           & -8  & -1 & 2  & -1 & 52 \\ \hline
+Twitch.tv            & 0   & 29 & -3 & 15 & 16 \\ \hline
+Total                & -14 & 29 & 2  & 68 & 129 \\ \hline
+\end{tabular}
+\vspace{1em} \\
+Offset from median throughput (KB/s, higher is better): \\
+\begin{tabular}{|l|c|c|c|c|c|} \hline
+ & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+\small{Unpopular YT} & 1.5  & -0.5  & 2.1   & -3.9 & -2.9 \\ \hline
+Popular YT           & -0.8 & -8.5  & -3.1  & 0.4  & -1.2 \\ \hline
+Soundcloud           & 0.1  & -5.1  & -1.3  & 2.5  & -5.4 \\ \hline
+Twitch.tv            & -0.4 & 0.3   & -6.8  & 0.7  & -0.6 \\ \hline
+Total                & 0.4  & -13.8 & -9.2  & -0.3 & -10.2\\ \hline
+\end{tabular}
+\vspace{1em} \\
+While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping, although still less than 100ms, suggesting that the caches for WebAfrica are still within South Africa but not in Cape Town (for example, they could be in Johannesburg). The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
 
 \subsection{UCT Network}
 For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet.
@@ -269,7 +316,7 @@ Run & Source & Website & CDN & Content \\ \hline
   & Soundcloud        & 148 & 148 & 148 \\ \hline
 \end{tabular}
 \vspace{1em} \\
-Number of hops: \\
+Number of hops: \\ % TODO: Update these with correct values
 \begin{tabular}{|l|l|c|c|c|} \hline
 Run & Source & Website & CDN & Content \\ \hline
 1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
@@ -302,6 +349,11 @@ Run & Source & Content \\ \hline
   & Twitch.tv         & 11274.2 \\ \hline  
   & Soundcloud        & -       \\ \hline
 \end{tabular}
+
+\subsubsection{Discussions}
+Being a significantly higher-bandwidth connection than what is available to a home user, this test over UCT's network makes the effects of caching and performance of CDNs more pronounced. The Youtube web page  gets served at a much lower ping than the actual content, suggesting that the web page is being cached within UCT's network. Also note the difference in throughput for the unpopular Youtube video on the first run to the other runs. On run 1 the video is not cached (as is evident by the higher ping) and is delivered at a far lower throughput than on subsequent or than the popular Youtube video.
+
+Another point of particular interest is the very low ping and hop counts that appear in test case 2. The results show the test machine's IP as the IP that the content was being retrieved from. This is most likely a bug in our tool's parsing of tcpdump's output.
 
 \section{Future Work}\label{sec:futurework}
 \begin{itemize}
