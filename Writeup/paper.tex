@@ -96,6 +96,8 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
+% Maybe run a speed test so we can quote the results and give perspective for our result numbers?
+
 % We are missing the caching train in this section wrt unpopular video (since the same video is used)
 % This is another reason why 3 tests are run, it makes this caching behaviour clear
 % Telkom is first -> EU Google Cache -> Telkom -> Telkom
@@ -157,8 +159,23 @@ Run & Source & Content \\ \hline
   & Twitch.tv         & 204.9 \\ \hline
 \end{tabular}
 
+\vspace{1em}
 TODO: Table of "offset from median" of the metrics for each ISP
+\vspace{1em}
 
+It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between ping and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
+
+One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from an IP with approximately the same ping and hops as the CDN, but in run 1 it both are significantly higher. The cause of this is clear if we look at the ping to the content IP for only that URL across ISPs:
+\vspace{1em} \\
+\begin{tabular}{|l|c|c|c|c|c|} \hline
+Run & Afrihost & Axxess & Cybersmart & Telkom & WebAfrica \\ \hline
+1 & 11 & 11  & 34  & 197 & 27 \\ \hline
+2 & 11 & 11  & 12  & 9   & 42 \\ \hline
+3 & 11 & 11  & 12  & 9   & 26 \\ \hline
+\end{tabular}
+These results are expected if we consider that the tests were done by doing 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess and finally Afrihost. On the first run (which just happens to be via Telkom) the video is not cached, so we get it from a server that is outside South Africa. This causes it to get cached however, causing the following runs to serve the content from a server that is much closer to the user.
+
+One more thing to notice is that in most cases, the ping to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
 
 \subsection{UCT Network}
 For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet.
