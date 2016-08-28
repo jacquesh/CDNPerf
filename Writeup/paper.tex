@@ -93,21 +93,19 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
-% Maybe run a speed test so we can quote the results and give perspective for our result numbers?
+%TODO (Jacques) I think it might be good to analyse the WHOIS organisation for Twitch and Soundcloud. Is the same organisation serving up the content for each ISP? Who is serving up the content for these two services?
 
-% We are missing the caching train in this section wrt unpopular video (since the same video is used)
-% This is another reason why 3 tests are run, it makes this caching behaviour clear
-% Telkom is first -> EU Google Cache -> Telkom -> Telkom
-% Then ISP 2 is second -> SA Google Cache -> ISP 2 -> ISP 2
-% Then ISP 3 is third -> SA Google Cache -> ISP 3 -> ISP 3
-% Then ISP 4 is fourth but uses same backbone as ISP 3 so -> ISP 3 -> ISP 3 -> ISP 3 etc.
+% TODO (Brian) Maybe run a speed test so we can quote the results and give perspective for our result numbers?
+
 
 We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929}.
 
+The Telkom account is a 2 Mbit uncapped account, the rest are 1 GB capped accounts.
+
 \subsubsection{Results across ISPs}
 Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the ping, number of hops and throughput averaged across ISPs.
+
 \begin{table}
-	\centering
 	\caption{Averaged ping across ISPs}
 	\label{table:avgPingAcrossISP}
 	\makebox[\linewidth]{
@@ -130,7 +128,6 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 \end{table}
 
 \begin{table}
-	\centering
 	\caption{Averaged number of hops across ISPs}
 	\label{table:avgHopsAcrossISP}
 	\makebox[\linewidth]{
@@ -153,7 +150,6 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 \end{table}
 
 \begin{table}
-	\centering
 	\caption{Averaged throughput (KB/s) across ISPs}
 	\label{avgThroughputAcrossISP}
 	\makebox[\linewidth]{
@@ -177,10 +173,9 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 % TODO: Table of "offset from median" of the metrics for each ISP
 It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between ping and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
 
-One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from an IP with approximately the same ping and hops as the CDN, but in run 1 it both are significantly higher. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} which shows the ping to the content IP for only that URL across ISPs.
+One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from the same organisation that hosts the CDN, but in run 1 we see significant increase in latency and note that the content comes from a different organisation. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} and \ref{table:OrgHostingUnpopularYouTubeVideo} which shows the ping to the content IP and the organisation that manages it.
 
 \begin{table}
-	\centering
 	\caption{Latency to unpopular YouTube video}
 	\label{table:LatencyToUnpopularYouTubeVideo}
 	\makebox[\linewidth]{
@@ -192,18 +187,50 @@ One thing that is less obvious is the difference of the first run to the other t
 	3 & 11 & 11  & 12  & 9   & 26 \\ \hline
 	\end{tabular}}
 \end{table}
-These results are expected if we consider that the tests were done by doing 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess and finally Afrihost. On the first run (which just happens to be via Telkom) the video is not cached, so we get it from a server that is outside South Africa. This causes it to get cached however, causing the following runs to serve the content from a server that is much closer to the user.
+
+\begin{table*}
+	\centering
+	\caption{Organisation managing IP to unpopular YouTube video}
+	\label{table:OrgHostingUnpopularYouTubeVideo}
+	\makebox[\linewidth]{
+		\small
+		\begin{tabular}{|l|c|c|c|c|c|} \hline
+			Run & Afrihost & Axxess & Cybersmart & Telkom & WebAfrica \\ \hline
+			1 & Dimension Data - Optinet & Dimension Data - Optinet & Google Inc. & Google Inc. & Google Inc. \\ \hline
+			2 & Dimension Data - Optinet & Dimension Data - Optinet & Dimension Data - Optinet & Telkom SA Ltd. & Internet Solutions \\ \hline
+			3 & Dimension Data - Optinet & Dimension Data - Optinet & Dimension Data - Optinet & Telkom SA Ltd. & Internet Solutions \\ \hline
+		\end{tabular}}
+	\end{table*}
+
+The tests were done by doing 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess and finally Afrihost to the same unpopular video. On the first run (which just happens to be via Telkom) the video is not cached anywhere in South Africa, as a result it has to come from a Google cache in Europe. However, this causes it to get cached so the following runs get served from Telkom's own cache. What we see from WebAfrica in the subsequent run is that the video does not come from Europe or Telkom's cache. It instead comes from a Google cache in South Africa. This means that when we first retrieved the video, it was cached not only to Telkom's servers, but also to Google's South African servers. Both WebAfrica and Cybersmart first serve the video up using Google's South African cache then serve it up using their respective ISP cache. Since Afrihost and Axxess use the same ISP cache as Cybersmart, they are served up directly with the ISP cache in their subsequent runs. 
+
+A follow-up test was done to check if Telkom also saw this behaviour that they will fetch a video from Google's South African cache if a user from another South African ISP has watched that video but a Telkom user has not. This was found to be the case
 
 One more thing to notice is that in most cases, the ping to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
 
 \subsubsection{Results across runs}
-To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median ping to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
+To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median ping to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
 
 \begin{table}
-	\centering
+	\caption{Baseline speed test for each ISP}
+	\label{table:baselineSpeedTests}
+	\makebox[75mm]{
+	\small
+	\begin{tabular}{|l|c|c|c|} \hline
+		ISP & \small{Ping (ms)} & \small{Downstream (KB/s)} & \small{UpStream (KB/s)} \\ \hline
+		Afrihost   & 9   & 220    & 51.25 \\ \hline
+		Axxess     & 10  & 221.25 & 55 \\ \hline
+		Cybersmart & 10  & 218.75 & 53.75 \\ \hline
+		Telkom     & 12  & 215    & 43.75 \\ \hline
+		WebAfrica  & 10  & 221.25 & 56.25 \\ \hline
+		\textbf{\textit{Average}}  & \textbf{\textit{10.2}}  & \textbf{\textit{219.25}} & \textbf{\textit{52}} \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
 	\caption{Offset from median ping to website (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToWebsite}
-	\makebox[\linewidth]{
+	\makebox[75mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -216,10 +243,9 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\centering
 	\caption{Offset from median ping to CDN (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToCDN}
-	\makebox[\linewidth]{
+	\makebox[75mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -232,10 +258,9 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\centering
 	\caption{Offset from median ping to content (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToContent}
-	\makebox[\linewidth]{
+	\makebox[75mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -248,10 +273,9 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\centering
 	\caption{Offset from median throughput (KB/s, higher is better)}
 	\label{table:OffsetFromMedianThroughput}
-	\makebox[\linewidth]{
+	\makebox[75mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -441,7 +465,7 @@ Another direction that would be useful in future work is to run a more distribut
 
 \small
 \bibliographystyle{abbrv}
-\bibliography{paper}  % sigproc.bib is the name of the Bibliography in this case
+\bibliography{paper}
 
 
 \end{document}
