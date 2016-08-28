@@ -89,7 +89,23 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
-We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular YouTube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular YouTube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929} on a 2 megabits per second (Mbps) ADSL line from Telkom. The Telkom ISP account is uncapped while the rest of the ISP accounts are capped at 1 gigabyte.
+We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular YouTube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular YouTube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929} on a 2 megabits per second (Mbps) ADSL line from Telkom. The Telkom ISP account is uncapped while the rest of the ISP accounts are capped at 1 gigabyte. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP.
+
+\begin{table}
+	\caption{Baseline speed test for each ISP}
+	\label{table:baselineSpeedTests}
+	\makebox[70mm]{
+	\small
+	\begin{tabular}{|l|c|c|c|} \hline
+		ISP & \small{RTT (ms)} & \small{Downstream (KB/s)} & \small{UpStream (KB/s)} \\ \hline
+		Afrihost   & 9   & 215 & 50 \\ \hline
+		Axxess     & 10  & 216 & 54 \\ \hline
+		Cybersmart & 10  & 214 & 52 \\ \hline
+		Telkom     & 12  & 210 & 43 \\ \hline
+		WebAfrica  & 10  & 216 & 55 \\ \hline
+		\textbf{\textit{Average}}  & \textbf{\textit{10.2}}  & \textbf{\textit{214}} & \textbf{\textit{51}} \\ \hline
+	\end{tabular}}
+\end{table}
 
 \subsubsection{Results across ISPs}
 Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the RTT, number of hops and throughput averaged across ISPs.
@@ -195,23 +211,7 @@ A follow-up test was done to check if Telkom also saw this behaviour that they w
 One more thing to notice is that in most cases, the RTT to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
 
 \subsubsection{Results across runs}
-To investigate the differences between ISPs, we present the offset from the median RTT and throughput averaged across the 3 runs. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median RTT to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
-
-\begin{table}
-	\caption{Baseline speed test for each ISP}
-	\label{table:baselineSpeedTests}
-	\makebox[70mm]{
-	\small
-	\begin{tabular}{|l|c|c|c|} \hline
-		ISP & \small{RTT (ms)} & \small{Downstream (KB/s)} & \small{UpStream (KB/s)} \\ \hline
-		Afrihost   & 9   & 215 & 50 \\ \hline
-		Axxess     & 10  & 216 & 54 \\ \hline
-		Cybersmart & 10  & 214 & 52 \\ \hline
-		Telkom     & 12  & 210 & 43 \\ \hline
-		WebAfrica  & 10  & 216 & 55 \\ \hline
-		\textbf{\textit{Average}}  & \textbf{\textit{10.2}}  & \textbf{\textit{219.25}} & \textbf{\textit{52}} \\ \hline
-	\end{tabular}}
-\end{table}
+To investigate the differences between ISPs, we present the offset from the median RTT and throughput averaged across the 3 runs. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median RTT to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
 
 \begin{table}
 	\caption{Offset from median RTT to website (ms, lower is better)}
@@ -231,7 +231,7 @@ To investigate the differences between ISPs, we present the offset from the medi
 \begin{table}
 	\caption{Offset from median RTT to CDN (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToCDN}
-	\makebox[75mm]{
+	\makebox[70mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -246,7 +246,7 @@ To investigate the differences between ISPs, we present the offset from the medi
 \begin{table}
 	\caption{Offset from median RTT to content (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToContent}
-	\makebox[95mm]{
+	\makebox[70mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|c|c|} \hline
 	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
@@ -275,7 +275,7 @@ To investigate the differences between ISPs, we present the offset from the medi
 While each ISP clearly performs differently, the only significant trend is that WebAfrica consistently gave a higher RTT than other ISPs. The only exception to this is the RTT to the YouTube website where WebAfrica performed slightly better than the median.
 
 The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
-
+\\\\
 \subsubsection{Content server owners}
 Although not shown in the tables, it is worth noting the results of the WHOIS lookup for the IPs that served the content. In the case of YouTube, which server provides the content depends on which networks make use of which local caches as well as whether or not the requested content is available in the cache. This is expected as YouTube is a very popular source of content and ISPs setup complex caching systems to reduce bandwidth. For Soundcloud and Twitch.tv however, this is not the case. All Soundcloud content gets delivered from a IP address that is registered to Amazon, suggesting that Soundcloud uses Amazon Web Services for all of its content storage and distribution. The content servers for Twitch.tv are not as consistent. While Afrihost, Telkom and WebAfrica all receive Twitch content from an IP registered to ``MCI Communications Services'' (the same company that is the registered owner of the CDN that hosts the content), Axxess and Cybersmart do not. Axxess routes to a CDN owned by MCI, but the actual content comes from a server owned by ``Akamai International''. Cybersmart does not even receive Twitch content from the same server each time, content arrives from servers that are owned by a variety of other companies.
 
