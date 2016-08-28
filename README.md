@@ -14,6 +14,12 @@ The focus is on comparing the performance characteristics of websites such as Yo
   - [Python 3] (https://www.python.org/downloads/)
   - ```pip install -r requirements.txt``` (virtual environment suggested: [link](http://stackoverflow.com/a/23842752))
 
+### Python modules
+The tests were run with the following version of each module (should the tests need to be replicated):
+  - psutil==4.3.0
+  - requests==2.11.1
+  - youtube-dl==2016.8.13
+
 ## To run
   - ```source <path_to_virtual_environment>/bin/activate``` if using a virtual environment
   - Ensure all the URLs of the videos you want to test are in a text file (see urls.txt for an example)
