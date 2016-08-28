@@ -1,13 +1,13 @@
 # CDN-Perf
 A project for a course titled "Measuring Internet Performance".
-The focus is on comparing the performance characteristics of websites such as Youtube to that of the servers which deliver their actual content.
+The focus is on comparing the performance characteristics of websites such as YouTube to that of the servers which deliver their actual content.
 
 ## Requirements
 ### Ubuntu
   - ```sudo apt-get build-essential traceroute tcpdump python3-dev python3-pip```
   - ```pip install -r requirements.txt``` (virtual environment suggested: [link](http://stackoverflow.com/a/23842752))
   - Ensure that tcpdump has permissions to access network device: [instructions](http://askubuntu.com/a/632189) (N.B. requires reboot after the steps are complete)
-  - Ensure traceroute has permisions to send ICMP packets: ``` sudo chmod u+s `which traceroute` ``` and similarly for ```ping``` if necessary.
+  - Ensure traceroute has permissions to send ICMP packets: ``` sudo chmod u+s `which traceroute` ``` and similarly for ```ping``` if necessary.
 
 ### Windows
   - [WinDump](https://www.winpcap.org/windump/install/default.htm) installed or in the current directory
@@ -20,4 +20,4 @@ The focus is on comparing the performance characteristics of websites such as Yo
   - ```python cdn_perf.py <path_to_urls_file>```
 
 ## Output
-  - A file ```data-<timespamp>.csv``` will be created which contains all test results.
+  - A file ```data-<timestamp>.csv``` will be created which contains all test results.
