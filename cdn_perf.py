@@ -12,7 +12,7 @@ from datetime import datetime
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
 verboseOutputTarget = subprocess.DEVNULL
 
-# Retry attemps
+# Retry attempts
 numberOfRetries = 3
 
 # Number of test runs
