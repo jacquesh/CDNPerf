@@ -290,6 +290,9 @@ While the different ISPs clearly perform differently, the only significant trend
 % Can you expand the above statement. What is less than 100ms? Because twitch and soundcloud is always in EU > 100ms.
 The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
 
+\subsubsection{Content server owners}
+Although not shown in the tables, it is worth noting the results of the WHOIS lookup for the IPs that served the content. In the case of Youtube, which server provides the content depends on which networks make use of which local caches as well as whether or not the requested content is available in the cache. This is expected as Youtube is a very popular source of content and ISPs setup complex caching systems to reduce bandwidth. For Soundcloud and Twitch.tv however, this is not the case. All Soundcloud content gets delivered from a IP address that is registered to Amazon, suggesting that Soundcloud uses Amazon Web Services for all of its content storage and distribution. The content servers for Twitch.tv are not as consistent. While Afrihost, Telkom and WebAfrica all receive Twitch content from an IP registered to ``MCI Communications Services'' (the same company that is the registered owner of the CDN that hosts the content), Axxess and Cybersmart do not. Axxess routes to a CDN owned by MCI, but the actual content comes from a server owned by ``Akamai International''. Cybersmart does not even receive Twitch content from the same server each time, content arrives from serves that are owned by a variety of other companies.
+
 \subsection{UCT Network}
 For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet.
 
