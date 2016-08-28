@@ -10,7 +10,7 @@ from time import sleep
 from datetime import datetime
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
-verboseOutputTarget = subprocess.DEVNULL
+verboseOutputTarget = None
 
 # Retry attempts
 numberOfRetries = 3
