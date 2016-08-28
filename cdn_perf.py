@@ -340,6 +340,6 @@ def removePartFiles(downloadFilename):
 # We can use https://www.reddit.com/r/unknownvideos/ as a source of probably-not-cached videos
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('No argument given, expected "findip.py <contentUrl>"')
+        print('No argument given, expected "cdn_perf.py <contentUrl>"')
     else:
         run(sys.argv[1])
