@@ -59,7 +59,7 @@ Section \ref{sec:related} will examine related work in measuring the performance
 % Relevant work that has been done
 There have been a number of studies on how the performance of video streaming affects the quality of experience (QoE) for the user. Casas \textit{et al.} \cite{6975242} took an ISP traffic view by analysing 1 months worth of YouTube packet flows from a large European ISP. The study challenges Google's Video Quality Report\footnote{http://www.google.com/get/videoqualityreport/} as it only considers ISP and access link bottlenecks as the root cause of bad user experience \cite{6975242}. Casas \textit{et al.} \cite{6975242} presents how poor content server selection by Google resulted in a large scale reduction for in QoE for many YouTube users. Fiadino \textit{et al.} \cite{6932930} developed an tool for ISP's to detect unexpected cache-selection events and changes in the traffic delivered by CDNs. Anomalous CDN behaviour has been shown to have a large impact for ISP's carrying the traffic and end-users \cite{6932930, Plissonneau:2012:LVH:2155555.2155588}. Zhu \textit{et al.} \cite{6233056} developed LatLong, a tool for CDN's to diagnose large latency increases on the network through passive measurement of traffic and routing. Results from analysing a one month's data from Google's CDN show that more than 40\% of latency increases coincide with interdomain routing changes and more than one-third involve a shift in traffic to different servers. Juluri \textit{et al.} \cite{6038496} developed Pytomo, a tool to measure playback quality on an end-host. The tool captures various metrics such as delay towards the server, download rates and buffering duration \cite{6038496}. These can then be used to measure Quality of Experience.
 
-In 2007 Gill \textit{et al.} \cite{Gill:2007:YTC:1298306.1298310} studied the usage patterns, file properties, popularity and transfer behaviour of YouTube. Its findings found that caching could be used effectively to scale Web 2.0 applications such as YouTube \cite{Gill:2007:YTC:1298306.1298310}. In 2011, Torres \textit{et al.} \cite{5961681} analysed a week-long dataset collected from the edge of five networks. The study determined the location of YouTube servers and revealed that round trip time (RTT) is not the only factor determining video server selection \cite{5961681}. Other factors that were found to affect server selection were load-balancing, the DNS server used and popularity of the accessed video \cite{5961681}.
+In 2007 Gill \textit{et al.} \cite{Gill:2007:YTC:1298306.1298310} studied the usage patterns, file properties, popularity and transfer behaviour of YouTube. Its findings found that caching could be used effectively to scale Web 2.0 applications such as YouTube \cite{Gill:2007:YTC:1298306.1298310}. In 2011, Torres \textit{et al.} \cite{5961681} analysed a week-long dataset collected from the edge of five networks. The study determined the location of YouTube servers and revealed that round-trip time (RTT) is not the only factor determining video server selection \cite{5961681}. Other factors that were found to affect server selection were load-balancing, the DNS server used and popularity of the accessed video \cite{5961681}.
 
 Labovitz \textit{et al.} \cite{Labovitz:2010:IIT:2043164.1851194} analysed 2 years worth of internet traffic through 110 different cable operators, international transit backbones, regional networks and content providers. The study found that there was a significant rise in video traffic \cite{Labovitz:2010:IIT:2043164.1851194}. It also found that the majority of inter-domain traffic flows between large content providers, CDNs and consumer networks \cite{Labovitz:2010:IIT:2043164.1851194}.
 
@@ -98,10 +98,10 @@ In the case of institutional networks, all our measurements were done while conn
 We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929} on a 2 megabits per second (Mbps) ADSL line from Telkom. The Telkom account is uncapped while the rest of the accounts are capped at 1 gigabyte.
 
 \subsubsection{Results across ISPs}
-Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the ping, number of hops and throughput averaged across ISPs.
+Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the RTT, number of hops and throughput averaged across ISPs.
 
 \begin{table}
-	\caption{Averaged ping across ISPs}
+	\caption{Averaged RTT across ISPs (ms)}
 	\label{table:avgPingAcrossISP}
 	\makebox[\linewidth]{
 	\small
@@ -145,7 +145,7 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 \end{table}
 
 \begin{table}
-	\caption{Averaged throughput (KB/s) across ISPs}
+	\caption{Averaged throughput across ISPs (KB/s)}
 	\label{avgThroughputAcrossISP}
 	\makebox[\linewidth]{
 	\small
@@ -165,12 +165,12 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 	  & Twitch.tv         & 204.9 \\ \hline
 	\end{tabular}}
 \end{table}
-It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between ping and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
+It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between RTT and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
 
-One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from the same organisation that hosts the CDN, but in run 1 we see significant increase in latency and note that the content comes from a different organisation. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} and \ref{table:OrgHostingUnpopularYouTubeVideo} which shows the ping to the content IP and the organisation that manages it.
+One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from the same organisation that hosts the CDN, but in run 1 we see significant increase in latency and note that the content comes from a different organisation. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} and \ref{table:OrgHostingUnpopularYouTubeVideo} which shows the RTT to the content IP and the organisation that manages it.
 
 \begin{table}
-	\caption{Latency to unpopular YouTube video}
+	\caption{RTT to unpopular YouTube video (ms)}
 	\label{table:LatencyToUnpopularYouTubeVideo}
 	\makebox[\linewidth]{
 	\small
@@ -200,10 +200,10 @@ The tests did 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess 
 
 A follow-up test was done to check if Telkom also saw this behaviour that they will fetch a video from Google's South African cache if a user from another South African ISP has watched that video but a Telkom user has not. This was found to be the case
 
-One more thing to notice is that in most cases, the ping to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
+One more thing to notice is that in most cases, the RTT to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
 
 \subsubsection{Results across runs}
-To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median ping to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
+To investigate the differences between ISPs, we present below the offset from the median RTT and throughput averaged across the 3 runs. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median RTT to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
 
 \begin{table}
 	\caption{Baseline speed test for each ISP}
@@ -211,7 +211,7 @@ To investigate the differences between ISPs, we present below the offset from th
 	\makebox[75mm]{
 	\small
 	\begin{tabular}{|l|c|c|c|} \hline
-		ISP & \small{Ping (ms)} & \small{Downstream (KB/s)} & \small{UpStream (KB/s)} \\ \hline
+		ISP & \small{RTT (ms)} & \small{Downstream (KB/s)} & \small{UpStream (KB/s)} \\ \hline
 		Afrihost   & 9   & 220    & 51.25 \\ \hline
 		Axxess     & 10  & 221.25 & 55 \\ \hline
 		Cybersmart & 10  & 218.75 & 53.75 \\ \hline
@@ -222,7 +222,7 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\caption{Offset from median ping to website (ms, lower is better)}
+	\caption{Offset from median RTT to website (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToWebsite}
 	\makebox[75mm]{
 	\small
@@ -237,7 +237,7 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\caption{Offset from median ping to CDN (ms, lower is better)}
+	\caption{Offset from median RTT to CDN (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToCDN}
 	\makebox[75mm]{
 	\small
@@ -252,7 +252,7 @@ To investigate the differences between ISPs, we present below the offset from th
 \end{table}
 
 \begin{table}
-	\caption{Offset from median ping to content (ms, lower is better)}
+	\caption{Offset from median RTT to content (ms, lower is better)}
 	\label{table:OffsetFromMedianPingToContent}
 	\makebox[75mm]{
 	\small
@@ -280,12 +280,12 @@ To investigate the differences between ISPs, we present below the offset from th
 	Total                & 0.4  & -13.8 & -9.2  & -0.3 & -10.2\\ \hline
 	\end{tabular}}
 \end{table}
-While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping than other ISPs. The only exception to this is the ping to the Youtube website where WebAfrica performed slightly better than the median.
+While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher RTT than other ISPs. The only exception to this is the RTT to the Youtube website where WebAfrica performed slightly better than the median.
 
 The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
 
 \subsubsection{Content server owners}
-Although not shown in the tables, it is worth noting the results of the WHOIS lookup for the IPs that served the content. In the case of Youtube, which server provides the content depends on which networks make use of which local caches as well as whether or not the requested content is available in the cache. This is expected as Youtube is a very popular source of content and ISPs setup complex caching systems to reduce bandwidth. For Soundcloud and Twitch.tv however, this is not the case. All Soundcloud content gets delivered from a IP address that is registered to Amazon, suggesting that Soundcloud uses Amazon Web Services for all of its content storage and distribution. The content servers for Twitch.tv are not as consistent. While Afrihost, Telkom and WebAfrica all receive Twitch content from an IP registered to ``MCI Communications Services'' (the same company that is the registered owner of the CDN that hosts the content), Axxess and Cybersmart do not. Axxess routes to a CDN owned by MCI, but the actual content comes from a server owned by ``Akamai International''. Cybersmart does not even receive Twitch content from the same server each time, content arrives from serves that are owned by a variety of other companies.
+Although not shown in the tables, it is worth noting the results of the WHOIS lookup for the IPs that served the content. In the case of Youtube, which server provides the content depends on which networks make use of which local caches as well as whether or not the requested content is available in the cache. This is expected as Youtube is a very popular source of content and ISPs setup complex caching systems to reduce bandwidth. For Soundcloud and Twitch.tv however, this is not the case. All Soundcloud content gets delivered from a IP address that is registered to Amazon, suggesting that Soundcloud uses Amazon Web Services for all of its content storage and distribution. The content servers for Twitch.tv are not as consistent. While Afrihost, Telkom and WebAfrica all receive Twitch content from an IP registered to ``MCI Communications Services'' (the same company that is the registered owner of the CDN that hosts the content), Axxess and Cybersmart do not. Axxess routes to a CDN owned by MCI, but the actual content comes from a server owned by ``Akamai International''. Cybersmart does not even receive Twitch content from the same server each time, content arrives from servers that are owned by a variety of other companies.
 
 \subsection{UCT Network}
 For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet running at 100 Mbps.
@@ -301,11 +301,11 @@ The first test case used the following media URLs:
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
-Table \ref{table:UCTPingTests-TestCase1}, \ref{table:UCTHopCount-TestCase1} and \ref{table:UCTThroughput-TestCase1} contain the ping, number of hops and throughput for each run of test case 1.
+Table \ref{table:UCTPingTests-TestCase1}, \ref{table:UCTHopCount-TestCase1} and \ref{table:UCTThroughput-TestCase1} contain the RTT, number of hops and throughput for each run of test case 1.
 
 \begin{table}
     \centering
-    \caption{Ping using UCT network - Test 1}
+    \caption{RTT using UCT network (ms) - Test 1}
     \label{table:UCTPingTests-TestCase1}
     \makebox[\linewidth]{
     \small
@@ -351,12 +351,12 @@ Table \ref{table:UCTPingTests-TestCase1}, \ref{table:UCTHopCount-TestCase1} and 
 
 \begin{table}
 	\centering
-	\caption{Throughput using UCT network - Test 1}
+	\caption{Throughput using UCT network (KB/s) - Test 1}
 	\label{table:UCTThroughput-TestCase1}
 	\makebox[\linewidth]{
 	\small
     \begin{tabular}{|l|l|c|c|c|} \hline
-    Run & Source & Content    \\ \hline
+    Run & Source & Content (KB/s)    \\ \hline
     1 & Unpopular Youtube & 521.5  \\ \hline
       & Popular Youtube   & 9809.9 \\ \hline
       & Twitch.tv         & 11366.4    \\ \hline
@@ -382,11 +382,11 @@ The second test case used the following media URLs:
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
-Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{table:UCTThroughput-TestCase2} contain the ping, number of hops and throughput for run of test case 2.
+Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{table:UCTThroughput-TestCase2} contain the RTT, number of hops and throughput for run of test case 2.
 
 \begin{table}
 	\centering
-	\caption{Ping using UCT network - Test 2}
+	\caption{RTT using UCT network (ms) - Test 2}
 	\label{table:UCTPing-TestCase2}
 	\makebox[\linewidth]{
 	\small
@@ -432,7 +432,7 @@ Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{
 
 \begin{table}
 	\centering
-	\caption{Throughput using UCT network - Test 2}
+	\caption{Throughput using UCT network (KB/s) - Test 2}
 	\label{table:UCTThroughput-TestCase2}
 	\makebox[\linewidth]{
 	\small
@@ -454,7 +454,7 @@ Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{
 \end{table}
 
 \subsubsection{Discussions}
-Being a significantly higher-bandwidth connection than what is available to a home user, this test over UCT's network makes the effects of caching and performance of CDNs more pronounced. Note the difference in throughput for the unpopular Youtube video on the first run to the second and third runs. On run 1 the video is not cached (as is evident by the higher ping) and is delivered at a bitrate far below what the connection supports. On the run 2 the video has been cached and is delivered with a significantly higher throughput. What is interesting to note however, is that on run 3 the throughput is again significantly higher than run 2, even though the ping to the server that delivers it has not changed. This suggests that the cache considers it to be "hotter" because of the additional request for it, and serves it at a higher throughput.
+Being a significantly higher-bandwidth connection than what is available to a home user, this test over UCT's network makes the effects of caching and performance of CDNs more pronounced. Note the difference in throughput for the unpopular Youtube video on the first run to the second and third runs. On run 1 the video is not cached (as is evident by the higher RTT) and is delivered at a bitrate far below what the connection supports. On the run 2 the video has been cached and is delivered with a significantly higher throughput. What is interesting to note however, is that on run 3 the throughput is again significantly higher than run 2, even though the RTT to the server that delivers it has not changed. This suggests that the cache considers it to be ``hotter'' because of the additional request for it, and serves it at a higher throughput. Another possibility is that while video is available at the server, the caching process has not fully completed, leading to slower throughput on run 2. The aforementioned behaviour were found to hold true for subsequent tests on other unpopular YouTube videos, not depicted in this paper.
 
 Another interesting point to make is that the throughput recorded for Twitch.tv is actually significantly higher than that of Youtube, even for very popular videos. This is surprising since the Twitch.tv content is not being delivered from a server residing on the African continent, while the popular Youtube content is being delivered from caches within Cape Town.
 
