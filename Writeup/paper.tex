@@ -105,129 +105,166 @@ In the case of institutional networks, all our measurements were done while conn
 We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular Youtube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929}.
 
 \subsubsection{Results across ISPs}
-Below are the results of each run, averaged across ISPs:
-\vspace{1em} \\
-Ping: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 39  & 35  & 56  \\ \hline
-  & Popular Youtube   & 60  & 14  & 14  \\ \hline
-  & Soundcloud        & 161 & 162 & 184 \\ \hline
-  & Twitch.tv         & 198 & 159 & 172 \\ \hline
-2 & Unpopular Youtube & 45  & 14  & 17  \\ \hline
-  & Popular Youtube   & 63  & 14  & 31  \\ \hline
-  & Soundcloud        & 161 & 160 & 165 \\ \hline
-  & Twitch.tv         & 193 & 159 & 181 \\ \hline
-3 & Unpopular Youtube & 31  & 17  & 14  \\ \hline
-  & Popular Youtube   & 31  & 23  & 18  \\ \hline
-  & Soundcloud        & 179 & 171 & 160 \\ \hline
-  & Twitch.tv         & 184 & 159 & 161 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Number of hops: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 10 & 7  & 10 \\ \hline
-  & Popular Youtube   & 10 & 8  & 8  \\ \hline
-  & Soundcloud        & 13 & 18 & 18 \\ \hline
-  & Twitch.tv         & 14 & 14 & 15 \\ \hline
-2 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
-  & Popular Youtube   & 10 & 8  & 8  \\ \hline
-  & Soundcloud        & 13 & 18 & 18 \\ \hline
-  & Twitch.tv         & 13 & 15 & 12 \\ \hline
-3 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
-  & Popular Youtube   & 10 & 8  & 8  \\ \hline
-  & Soundcloud        & 13 & 18 & 18 \\ \hline
-  & Twitch.tv         & 13 & 15 & 13 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Throughput (KB/s): \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Content \\ \hline
-1 & Unpopular Youtube & 197.8 \\ \hline
-  & Popular Youtube   & 202.6 \\ \hline
-  & Soundcloud        & 197.9 \\ \hline
-  & Twitch.tv         & 201.2 \\ \hline
-2 & Unpopular Youtube & 201.9 \\ \hline
-  & Popular Youtube   & 197.8 \\ \hline
-  & Soundcloud        & 201.3 \\ \hline
-  & Twitch.tv         & 203.1 \\ \hline
-3 & Unpopular Youtube & 202.8 \\ \hline
-  & Popular Youtube   & 200.4 \\ \hline
-  & Soundcloud        & 203.6 \\ \hline
-  & Twitch.tv         & 204.9 \\ \hline
-\end{tabular}}
+Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the ping, number of hops and throughput averaged across ISPs.
+\begin{table}
+	\centering
+	\caption{Averaged ping across ISPs}
+	\label{table:avgPingAcrossISP}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 39  & 35  & 56  \\ \hline
+	  & Popular Youtube   & 60  & 14  & 14  \\ \hline
+	  & Soundcloud        & 161 & 162 & 184 \\ \hline
+	  & Twitch.tv         & 198 & 159 & 172 \\ \hline
+	2 & Unpopular Youtube & 45  & 14  & 17  \\ \hline
+	  & Popular Youtube   & 63  & 14  & 31  \\ \hline
+	  & Soundcloud        & 161 & 160 & 165 \\ \hline
+	  & Twitch.tv         & 193 & 159 & 181 \\ \hline
+	3 & Unpopular Youtube & 31  & 17  & 14  \\ \hline
+	  & Popular Youtube   & 31  & 23  & 18  \\ \hline
+	  & Soundcloud        & 179 & 171 & 160 \\ \hline
+	  & Twitch.tv         & 184 & 159 & 161 \\ \hline
+	\end{tabular}}
+\end{table}
 
-\vspace{1em}
-TODO: Table of "offset from median" of the metrics for each ISP
-\vspace{1em}
+\begin{table}
+	\centering
+	\caption{Averaged number of hops across ISPs}
+	\label{table:avgHopsAcrossISP}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 10 & 7  & 10 \\ \hline
+	  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+	  & Soundcloud        & 13 & 18 & 18 \\ \hline
+	  & Twitch.tv         & 14 & 14 & 15 \\ \hline
+	2 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
+	  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+	  & Soundcloud        & 13 & 18 & 18 \\ \hline
+	  & Twitch.tv         & 13 & 15 & 12 \\ \hline
+	3 & Unpopular Youtube & 10 & 7  & 7  \\ \hline
+	  & Popular Youtube   & 10 & 8  & 8  \\ \hline
+	  & Soundcloud        & 13 & 18 & 18 \\ \hline
+	  & Twitch.tv         & 13 & 15 & 13 \\ \hline
+	\end{tabular}}
+\end{table}
 
+\begin{table}
+	\centering
+	\caption{Averaged throughput (KB/s) across ISPs}
+	\label{avgThroughputAcrossISP}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Content \\ \hline
+	1 & Unpopular Youtube & 197.8 \\ \hline
+	  & Popular Youtube   & 202.6 \\ \hline
+	  & Soundcloud        & 197.9 \\ \hline
+	  & Twitch.tv         & 201.2 \\ \hline
+	2 & Unpopular Youtube & 201.9 \\ \hline
+	  & Popular Youtube   & 197.8 \\ \hline
+	  & Soundcloud        & 201.3 \\ \hline
+	  & Twitch.tv         & 203.1 \\ \hline
+	3 & Unpopular Youtube & 202.8 \\ \hline
+	  & Popular Youtube   & 200.4 \\ \hline
+	  & Soundcloud        & 203.6 \\ \hline
+	  & Twitch.tv         & 204.9 \\ \hline
+	\end{tabular}}
+\end{table}
+% TODO: Table of "offset from median" of the metrics for each ISP
 It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between ping and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
 
-One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from an IP with approximately the same ping and hops as the CDN, but in run 1 it both are significantly higher. The cause of this is clear if we look at the ping to the content IP for only that URL across ISPs:
-\vspace{1em} \\
-{\small
-\begin{tabular}{|l|c|c|c|c|c|} \hline
-Run & Afrihost & Axxess & Cybersmart & Telkom & WebAfrica \\ \hline
-1 & 11 & 11  & 34  & 197 & 27 \\ \hline
-2 & 11 & 11  & 12  & 9   & 42 \\ \hline
-3 & 11 & 11  & 12  & 9   & 26 \\ \hline
-\end{tabular}}
+One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from an IP with approximately the same ping and hops as the CDN, but in run 1 it both are significantly higher. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} which shows the ping to the content IP for only that URL across ISPs.
+
+\begin{table}
+	\centering
+	\caption{Latency to unpopular YouTube video}
+	\label{table:LatencyToUnpopularYouTubeVideo}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|c|c|c|c|c|} \hline
+	Run & Afrihost & Axxess & Cybersmart & Telkom & WebAfrica \\ \hline
+	1 & 11 & 11  & 34  & 197 & 27 \\ \hline
+	2 & 11 & 11  & 12  & 9   & 42 \\ \hline
+	3 & 11 & 11  & 12  & 9   & 26 \\ \hline
+	\end{tabular}}
+\end{table}
 These results are expected if we consider that the tests were done by doing 3 runs on Telkom first, followed by WebAfrica, Cybersmart, Axxess and finally Afrihost. On the first run (which just happens to be via Telkom) the video is not cached, so we get it from a server that is outside South Africa. This causes it to get cached however, causing the following runs to serve the content from a server that is much closer to the user.
 
 One more thing to notice is that in most cases, the ping to the website is higher than to the CDN or the content. This is a useful result as it indicates that content delivery networks are providing an optimized means of delivering high-bandwidth content to users.
 
 \subsubsection{Results across runs}
-To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs:
-\vspace{1em} \\
-Offset from median ping to website (ms, lower is better): \\
-{\small
-\begin{tabular}{|l|c|c|c|c|c|} \hline
- & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
-\small{Unpopular YT} & 9  & 23  & 2  & -1  & -3 \\ \hline
-Popular YT           & 11 & 88  & 1  & -1  & -6 \\ \hline
-Soundcloud           & 10 & 0   & -5 & -3  & 53 \\ \hline
-Twitch.tv            & 26 & 6   & 14 & -9  & 41 \\ \hline
-Total                & 56 & 117 & 12 & -14 & 85 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Offset from median ping to CDN (ms, lower is better): \\
-{\small
-\begin{tabular}{|l|c|c|c|c|c|} \hline
- & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
-\small{Unpopular YT} & 35 & -1 & 0  & -2 & 21 \\ \hline
-Popular YT           & 0  & 0  & 0  & -2 & 28 \\ \hline
-Soundcloud           & 14 & 2  & -6 & -1 & 25 \\ \hline
-Twitch.tv            & -5 & -4 & 1  & 1  & 12 \\ \hline
-Total                & 44 & -4 & -4 & -3 & 86 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Offset from median ping to content (ms, lower is better): \\
-{\small
-\begin{tabular}{|l|c|c|c|c|c|} \hline
- & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
-\small{Unpopular YT} & -5  & -5 & 3  & 56 & 15 \\ \hline
-Popular YT           & 0   & 7  & 0  & -2 & 45 \\ \hline
-Soundcloud           & -8  & -1 & 2  & -1 & 52 \\ \hline
-Twitch.tv            & 0   & 29 & -3 & 15 & 16 \\ \hline
-Total                & -14 & 29 & 2  & 68 & 129 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Offset from median throughput (KB/s, higher is better): \\
-{\small
-\begin{tabular}{|l|c|c|c|c|c|} \hline
- & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
-\small{Unpopular YT} & 1.5  & -0.5  & 2.1   & -3.9 & -2.9 \\ \hline
-Popular YT           & -0.8 & -8.5  & -3.1  & 0.4  & -1.2 \\ \hline
-Soundcloud           & 0.1  & -5.1  & -1.3  & 2.5  & -5.4 \\ \hline
-Twitch.tv            & -0.4 & 0.3   & -6.8  & 0.7  & -0.6 \\ \hline
-Total                & 0.4  & -13.8 & -9.2  & -0.3 & -10.2\\ \hline
-\end{tabular}}
-\vspace{1em} \\
-While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping, although still less than 100ms, suggesting that the caches for WebAfrica are still within South Africa but not in Cape Town (for example, they could be in Johannesburg). The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
+To investigate the differences between ISPs, we present below the offset from the median ping and throughput averaged across the 3 runs. Table \ref{table:OffsetFromMedianPingToWebsite}, \ref{table:OffsetFromMedianPingToCDN} and \ref{table:OffsetFromMedianPingToContent} contain the offset from median ping to website, CDN and content IP from each ISP respectively. Table \ref{table:OffsetFromMedianThroughput} contains the offset median throughput for each ISP.
+
+\begin{table}
+	\centering
+	\caption{Offset from median ping to website (ms, lower is better)}
+	\label{table:OffsetFromMedianPingToWebsite}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|c|c|c|c|c|} \hline
+	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+	\small{Unpopular YT} & 9  & 23  & 2  & -1  & -3 \\ \hline
+	Popular YT           & 11 & 88  & 1  & -1  & -6 \\ \hline
+	Soundcloud           & 10 & 0   & -5 & -3  & 53 \\ \hline
+	Twitch.tv            & 26 & 6   & 14 & -9  & 41 \\ \hline
+	Total                & 56 & 117 & 12 & -14 & 85 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Offset from median ping to CDN (ms, lower is better)}
+	\label{table:OffsetFromMedianPingToCDN}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|c|c|c|c|c|} \hline
+	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+	\small{Unpopular YT} & 35 & -1 & 0  & -2 & 21 \\ \hline
+	Popular YT           & 0  & 0  & 0  & -2 & 28 \\ \hline
+	Soundcloud           & 14 & 2  & -6 & -1 & 25 \\ \hline
+	Twitch.tv            & -5 & -4 & 1  & 1  & 12 \\ \hline
+	Total                & 44 & -4 & -4 & -3 & 86 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Offset from median ping to content (ms, lower is better)}
+	\label{table:OffsetFromMedianPingToContent}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|c|c|c|c|c|} \hline
+	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+	\small{Unpopular YT} & -5  & -5 & 3  & 56 & 15 \\ \hline
+	Popular YT           & 0   & 7  & 0  & -2 & 45 \\ \hline
+	Soundcloud           & -8  & -1 & 2  & -1 & 52 \\ \hline
+	Twitch.tv            & 0   & 29 & -3 & 15 & 16 \\ \hline
+	Total                & -14 & 29 & 2  & 68 & 129 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Offset from median throughput (KB/s, higher is better)}
+	\label{table:OffsetFromMedianThroughput}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|c|c|c|c|c|} \hline
+	 & \small{Afrihost} & \small{Axxess} & \small{Cybersmart} & \small{Telkom} & \small{WebAfrica} \\ \hline
+	\small{Unpopular YT} & 1.5  & -0.5  & 2.1   & -3.9 & -2.9 \\ \hline
+	Popular YT           & -0.8 & -8.5  & -3.1  & 0.4  & -1.2 \\ \hline
+	Soundcloud           & 0.1  & -5.1  & -1.3  & 2.5  & -5.4 \\ \hline
+	Twitch.tv            & -0.4 & 0.3   & -6.8  & 0.7  & -0.6 \\ \hline
+	Total                & 0.4  & -13.8 & -9.2  & -0.3 & -10.2\\ \hline
+	\end{tabular}}
+\end{table}
+While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping, although still less than 100ms, suggesting that the caches for WebAfrica are still within South Africa but not in Cape Town (for example, they could be in Johannesburg). 
+% Can you expand the above statement. What is less than 100ms? Because twitch and soundcloud is always in EU > 100ms.
+The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
 
 \subsection{UCT Network}
 For a comparison, we also ran two tests on the UCT network. The test was run from a laptop connected to the UCT network via Ethernet.
@@ -241,61 +278,76 @@ The first test case used the following media URLs:
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
-The results are tabulated below:
-\vspace{1em} \\
-Ping: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 18  & 49  & 44  \\ \hline
-  & Popular Youtube   & 45  & 19  & 18  \\ \hline
-  & Soundcloud        & 179 & 148 & 154 \\ \hline
-  & Twitch.tv         & 148 & 155 & 148 \\ \hline
-2 & Unpopular Youtube & 21  & 19  & 19  \\ \hline
-  & Popular Youtube   & 19  & 26  & 19  \\ \hline
-  & Soundcloud        & 148 & 149 & 148 \\ \hline
-  & Twitch.tv         & 148 & 148 & 148 \\ \hline
-3 & Unpopular Youtube & 3   & 19  & 19  \\ \hline
-  & Popular Youtube   & 2   & 45  & 68  \\ \hline
-  & Soundcloud        & 148 & 148 & 148 \\ \hline
-  & Twitch.tv         & 151 & 154 & 148 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Number of hops: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Throughput: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Content \\ \hline
-1 & Unpopular Youtube & 1484.8  \\ \hline
-  & Popular Youtube   & 8560.6  \\ \hline
-  & Soundcloud        & 1351.7  \\ \hline
-  & Twitch.tv         & 11284.5 \\ \hline
-2 & Unpopular Youtube & 7690.2  \\ \hline
-  & Popular Youtube   & 8161.3  \\ \hline
-  & Soundcloud        & -       \\ \hline
-  & Twitch.tv         & 11264.0 \\ \hline
-3 & Unpopular Youtube & 7598.1  \\ \hline
-  & Popular Youtube   & 9543.7  \\ \hline
-  & Soundcloud        & -       \\ \hline  
-  & Twitch.tv         & 11233.3 \\ \hline
-\end{tabular}}
+Table \ref{table:UCTPingTests-TestCase1}, \ref{table:UCTHopCount-TestCase1} and \ref{table:UCTThroughput-TestCase1} contain the ping, number of hops and throughput for each run of test case 1.
+
+\begin{table}
+	\centering
+	\caption{Ping using UCT network}
+	\label{table:UCTPingTests-TestCase1}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 18  & 49  & 44  \\ \hline
+	  & Popular Youtube   & 45  & 19  & 18  \\ \hline
+	  & Soundcloud        & 179 & 148 & 154 \\ \hline
+	  & Twitch.tv         & 148 & 155 & 148 \\ \hline
+	2 & Unpopular Youtube & 21  & 19  & 19  \\ \hline
+	  & Popular Youtube   & 19  & 26  & 19  \\ \hline
+	  & Soundcloud        & 148 & 149 & 148 \\ \hline
+	  & Twitch.tv         & 148 & 148 & 148 \\ \hline
+	3 & Unpopular Youtube & 3   & 19  & 19  \\ \hline
+	  & Popular Youtube   & 2   & 45  & 68  \\ \hline
+	  & Soundcloud        & 148 & 148 & 148 \\ \hline
+	  & Twitch.tv         & 151 & 154 & 148 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Hop count using UCT network}
+	\label{table:UCTHopCount-TestCase1}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Throughput using UCT network}
+	\label{table:UCTThroughput-TestCase1}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Content \\ \hline
+	1 & Unpopular Youtube & 1484.8  \\ \hline
+	  & Popular Youtube   & 8560.6  \\ \hline
+	  & Soundcloud        & 1351.7  \\ \hline
+	  & Twitch.tv         & 11284.5 \\ \hline
+	2 & Unpopular Youtube & 7690.2  \\ \hline
+	  & Popular Youtube   & 8161.3  \\ \hline
+	  & Soundcloud        & -       \\ \hline
+	  & Twitch.tv         & 11264.0 \\ \hline
+	3 & Unpopular Youtube & 7598.1  \\ \hline
+	  & Popular Youtube   & 9543.7  \\ \hline
+	  & Soundcloud        & -       \\ \hline  
+	  & Twitch.tv         & 11233.3 \\ \hline
+	\end{tabular}}
+\end{table}
 
 \subsubsection{Test case 2}
 The second test case used the following media URLs:
@@ -305,61 +357,77 @@ The second test case used the following media URLs:
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
-The results are tabulated below:
-\vspace{1em} \\
-Ping: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 4   & 19  & 188 \\ \hline
-  & Popular Youtube   & 4   & 19  & 21  \\ \hline
-  & Twitch.tv         & 148 & 154 & 148 \\ \hline
-  & Soundcloud        & 148 & 148 & 0   \\ \hline
-2 & Unpopular Youtube & 3   & 47  & 19  \\ \hline
-  & Popular Youtube   & 4   & 20  & 19  \\ \hline
-  & Twitch.tv         & 172 & 154 & 0   \\ \hline
-  & Soundcloud        & 148 & 149 & 149 \\ \hline
-3 & Unpopular Youtube & 4   & 33  & 19  \\ \hline
-  & Popular Youtube   & 3   & 20  & 18  \\ \hline
-  & Twitch.tv         & 149 & 148 & 0   \\ \hline
-  & Soundcloud        & 148 & 148 & 148 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Number of hops: \\ % TODO: Update these with correct values
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Website & CDN & Content \\ \hline
-1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 1 \\ \hline
-2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 1 \\ \hline
-3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-  & Soundcloud        & 9 & 9 & 1 \\ \hline
-\end{tabular}}
-\vspace{1em} \\
-Throughput: \\
-{\small
-\begin{tabular}{|l|l|c|c|c|} \hline
-Run & Source & Content \\ \hline
-1 & Unpopular Youtube & 190.9   \\ \hline
-  & Popular Youtube   & 8048.6  \\ \hline
-  & Twitch.tv         & 10526.7 \\ \hline
-  & Soundcloud        & 1341.4  \\ \hline
-2 & Unpopular Youtube & 9513.0  \\ \hline
-  & Popular Youtube   & 8335.4  \\ \hline
-  & Twitch.tv         & 11397.1 \\ \hline
-  & Soundcloud        & -       \\ \hline
-3 & Unpopular Youtube & 9840.6  \\ \hline
-  & Popular Youtube   & 7260.2  \\ \hline
-  & Twitch.tv         & 11274.2 \\ \hline  
-  & Soundcloud        & -       \\ \hline
-\end{tabular}}
+Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{table:UCTThroughput-TestCase2} contain the ping, number of hops and throughput for run of test case 2.
+
+\begin{table}
+	\centering
+	\caption{Ping using UCT network}
+	\label{table:UCTPing-TestCase2}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 4   & 19  & 188 \\ \hline
+	  & Popular Youtube   & 4   & 19  & 21  \\ \hline
+	  & Twitch.tv         & 148 & 154 & 148 \\ \hline
+	  & Soundcloud        & 148 & 148 & 0   \\ \hline
+	2 & Unpopular Youtube & 3   & 47  & 19  \\ \hline
+	  & Popular Youtube   & 4   & 20  & 19  \\ \hline
+	  & Twitch.tv         & 172 & 154 & 0   \\ \hline
+	  & Soundcloud        & 148 & 149 & 149 \\ \hline
+	3 & Unpopular Youtube & 4   & 33  & 19  \\ \hline
+	  & Popular Youtube   & 3   & 20  & 18  \\ \hline
+	  & Twitch.tv         & 149 & 148 & 0   \\ \hline
+	  & Soundcloud        & 148 & 148 & 148 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Hop count using UCT network}
+	\label{table:UCTHopCount-TestCase2}
+	\makebox[\linewidth]{
+	\small
+	% TODO: Update these with correct values
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Website & CDN & Content \\ \hline
+	1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 1 \\ \hline
+	2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 1 \\ \hline
+	3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
+	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
+	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
+	  & Soundcloud        & 9 & 9 & 1 \\ \hline
+	\end{tabular}}
+\end{table}
+
+\begin{table}
+	\centering
+	\caption{Throughput using UCT network}
+	\label{table:UCTThroughput-TestCase2}
+	\makebox[\linewidth]{
+	\small
+	\begin{tabular}{|l|l|c|c|c|} \hline
+	Run & Source & Content \\ \hline
+	1 & Unpopular Youtube & 190.9   \\ \hline
+	  & Popular Youtube   & 8048.6  \\ \hline
+	  & Twitch.tv         & 10526.7 \\ \hline
+	  & Soundcloud        & 1341.4  \\ \hline
+	2 & Unpopular Youtube & 9513.0  \\ \hline
+	  & Popular Youtube   & 8335.4  \\ \hline
+	  & Twitch.tv         & 11397.1 \\ \hline
+	  & Soundcloud        & -       \\ \hline
+	3 & Unpopular Youtube & 9840.6  \\ \hline
+	  & Popular Youtube   & 7260.2  \\ \hline
+	  & Twitch.tv         & 11274.2 \\ \hline  
+	  & Soundcloud        & -       \\ \hline
+	\end{tabular}}
+\end{table}
 
 \subsubsection{Discussions}
 Being a significantly higher-bandwidth connection than what is available to a home user, this test over UCT's network makes the effects of caching and performance of CDNs more pronounced. The Youtube web page  gets served at a much lower ping than the actual content, suggesting that the web page is being cached within UCT's network. Also note the difference in throughput for the unpopular Youtube video on the first run to the other runs. On run 1 the video is not cached (as is evident by the higher ping) and is delivered at a far lower throughput than on subsequent or than the popular Youtube video.
