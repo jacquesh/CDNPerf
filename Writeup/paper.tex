@@ -90,23 +90,7 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
-We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular YouTube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular YouTube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929} on a 2 megabits per second (Mbps) ADSL line from Telkom. The Telkom ISP account is uncapped while the rest of the ISP accounts are capped at 1 gigabyte. Table \ref{table:baselineSpeedTests} contains the results from executing a speed test\footnote{Executed at: http://www.speedtest.net} for each ISP. This provides some baseline results for each ISP.
-
-\begin{table}
-	\caption{Baseline speed test for each ISP}
-	\label{table:baselineSpeedTests}
-	\makebox[70mm]{
-	\small
-	\begin{tabular}{|l|c|c|c|} \hline
-		ISP & \small{RTT (ms)} & \small{Downstream (KB/s)} & \small{Upstream (KB/s)} \\ \hline
-		Afrihost   & 9   & 215 & 50 \\ \hline
-		Axxess     & 10  & 216 & 54 \\ \hline
-		Cybersmart & 10  & 214 & 52 \\ \hline
-		Telkom     & 12  & 210 & 43 \\ \hline
-		WebAfrica  & 10  & 216 & 55 \\ \hline
-		\textbf{\textit{Average}}  & \textbf{\textit{10.2}}  & \textbf{\textit{214}} & \textbf{\textit{51}} \\ \hline
-	\end{tabular}}
-\end{table}
+We ran our tests on a single home network, gathering measurements for 5 different ISPs (namely Afrihost, Axxess, Cybersmart, Telkom, and WebAfrica) using the same four media URLs\footnote{Unpopular YouTube video: \\ https://www.youtube.com/watch?v=1-xX7hPxMio}\footnote{Popular YouTube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0}\footnote{Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release}\footnote{Twitch.tv video: \\https://www.twitch.tv/dota2ti/v/83400929} on a 2 megabits per second (Mbps) ADSL line from Telkom. The Telkom ISP account is uncapped while the rest of the ISP accounts are capped at 1 gigabyte.
 
 \subsubsection{Results across ISPs}
 Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThroughputAcrossISP} show the RTT, number of hops and throughput averaged across ISPs.
@@ -276,7 +260,7 @@ To investigate the differences between ISPs, we present the offset from the medi
 While each ISP clearly performs differently, the only significant trend is that WebAfrica consistently gave a higher RTT than other ISPs. The only exception to this is the RTT to the YouTube website where WebAfrica performed slightly better than the median.
 
 The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
-\\\\
+
 \subsubsection{Content server owners}
 Although not shown in the tables, it is worth noting the results of the WHOIS lookup for the IPs that served the content. In the case of YouTube, which server provides the content depends on which networks make use of which local caches as well as whether or not the requested content is available in the cache. This is expected as YouTube is a very popular source of content and ISPs setup complex caching systems to reduce bandwidth. For Soundcloud and Twitch.tv however, this is not the case. All Soundcloud content gets delivered from a IP address that is registered to Amazon, suggesting that Soundcloud uses Amazon Web Services for all of its content storage and distribution. The content servers for Twitch.tv are not as consistent. While Afrihost, Telkom and WebAfrica all receive Twitch content from an IP registered to ``MCI Communications Services'' (the same company that is the registered owner of the CDN that hosts the content), Axxess and Cybersmart do not. Axxess routes to a CDN owned by MCI, but the actual content comes from a server owned by ``Akamai International''. Cybersmart does not even receive Twitch content from the same server each time, content arrives from servers that are owned by a variety of other companies.
 
@@ -455,6 +439,13 @@ Another trend to take note of is that the throughput recorded for Twitch.tv is a
 Our experiments have focussed on streaming of internet video and audio on-demand, from websites including YouTube, Twitch.tv and Soundcloud. In future work we would like to extend this to streaming of live video and audio content such as from YouTube Live or Twitch.tv's live streams. Another extension would be to consider the differences in performance of streamed video content to video adverts, which are prevalent both on YouTube and Twitch.tv.
 
 Another direction that would be useful in future work is to run a more distributed version of our experiments which include running the test from various locations around the world. This would give a better understanding of how our results generalize to the internet as a whole, rather than just the connectivity in South Africa.
+
+\section{Conclusions}
+We have developed a tool which can take a list of URLs to a range of multimedia services. It captures a wide range of quantitative metrics such as: RTT, number of hops required to reach the IP, approximate location of IP and organisation hosting IP. Each of the aforementioned metrics are recorded for the resolved IP of the input URL, the IP that the browser is directed to obtain the content from and the IP of the server that actually served up the multimedia content. We also measure the throughput from the multimedia CDN to end-host.
+
+We tested from a number of ISPs on a home network as well as an institutional network. Our results gained insights on the caching behaviour of YouTube with respect to videos with very few views. We found that the majority of unpopular videos are not cached within South Africa. The video has to be obtained from a Google cache in Europe. We found that after viewing the unpopular video it would be cached on both on the ISP's server and Google's South African cache. Subsequent views from the same ISP would come from the ISP cache and views from another ISP would come from Google's South African cache instead of from Europe.
+
+On the institutional network we found that even though, on run 2, the unpopular YouTube video was obtained from the institution's cache, it would always be slower than run 3. It was reasoned that this could be because the cache considers it to be ``hotter'' because of the additional request for it, and serves it at a higher throughput. Another possibility is that while the video is available at the server, the caching process has not fully completed, leading to slower throughput on run 2.
 
 \small
 \bibliographystyle{abbrv}
