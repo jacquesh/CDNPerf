@@ -56,19 +56,21 @@ def getPrimaryNetworkDevice():
 
 
 def getLocalIP():
+    localIP = '(Unknown)'
     if sys.platform == 'win32':
         ipconfigLines = subprocess.Popen(['ipconfig'], stdout=subprocess.PIPE, stderr=verboseOutputTarget).stdout.readlines()
-        localIP = '(Unknown)'
         for line in ipconfigLines:
             lineStr = str(line.decode().strip())
             index = lineStr.find('IPv4 Address')
             if index == -1:
                 continue
             localIP = lineStr[lineStr.find(':') + 2:]
-        return localIP.strip()
     else:
         ipRoute = subprocess.Popen(["ip", "route", "get", "8.8.8.8"], stdout=subprocess.PIPE)
-        return subprocess.check_output(["awk", "{print $NF; exit}"], stdin=ipRoute.stdout).strip().decode()
+        localIP = subprocess.check_output(["awk", "{print $NF; exit}"], stdin=ipRoute.stdout).strip().decode()
+
+    verbosePrint("Local IP - {0}".format(localIP))
+    return localIP.strip()
 
 
 def getContentURL(targetURL):
@@ -180,7 +182,6 @@ def getContentIP(targetURL, localIP, networkDeviceID):
                 secondIP = ip
 
         totalIPsConsidered = len(dumpOutput) - nonMatches
-        verbosePrint("Local IP - {0}".format(localIP))
         verbosePrint("Total IPs considered - {0}".format(totalIPsConsidered))
         verbosePrint("Max IP and count: {0} - {1}".format(maxIP, maxIPCount))
         verbosePrint("Second IP and count: {0} - {1}".format(secondIP, secondIPCount))
