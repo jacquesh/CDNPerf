@@ -10,7 +10,7 @@ from time import sleep
 from datetime import datetime
 
 # Set this to subprocess.DEVNULL for clean output, None for verbose output
-verboseOutputTarget = subprocess.DEVNULL
+verboseOutputTarget = None
 
 # Retry attemps
 numberOfRetries = 3
@@ -67,7 +67,7 @@ def getLocalIP():
         return localIP
     else:
         ipRoute = subprocess.Popen(["ip", "route", "get", "8.8.8.8"], stdout=subprocess.PIPE)
-        return subprocess.check_output(["awk", "{print $NF; exit}"], stdin=ipRoute.stdout).strip()
+        return subprocess.check_output(["awk", "{print $NF; exit}"], stdin=ipRoute.stdout).strip().decode()
 
 
 def getContentURL(targetURL):
@@ -157,6 +157,7 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             sourceIP = ipMatch.group(1)
             targetIP = ipMatch.group(3)
             if sourceIP == localIP:
+                nonMatches += 1
                 continue
             if sourceIP not in ipMap:
                 ipMap[sourceIP] = 1
@@ -169,7 +170,21 @@ def getContentIP(targetURL, localIP, networkDeviceID):
             if ipMap[ip] > maxIPCount:
                 maxIPCount = ipMap[ip]
                 maxIP = ip
-        if maxIPCount > (len(dumpOutput) - nonMatches) / 2:
+
+        secondIP = ''
+        secondIPCount = 0
+        for ip in ipMap:
+            if ip != maxIP and ipMap[ip] > secondIPCount:
+                secondIPCount = ipMap[ip]
+                secondIP = ip
+
+        totalIPsConsidered = len(dumpOutput) - nonMatches
+        verbosePrint("Local IP - {0}".format(localIP))
+        verbosePrint("Total IPs considered - {0}".format(totalIPsConsidered))
+        verbosePrint("Max IP and count: {0} - {1}".format(maxIP, maxIPCount))
+        verbosePrint("Second IP and count: {0} - {1}".format(secondIP, secondIPCount))
+
+        if maxIPCount > totalIPsConsidered / 2:
             removePartFiles(downloadFilename)
             return maxIP, downloadKBPerSecond
 
@@ -278,6 +293,7 @@ def measureExistingNetworkActivity(sleepTime = 3, thresholdRecvKBs = 100, thresh
         raise RuntimeError("Existing network activity detected, ensure that there is no network activity before executing")
 
     localPing = pingIP("8.8.8.8")
+    print(localPing)
     if float(localPing) > 150:
         raise RuntimeError("Ping to google DNS is higher than expected, ensure network is stable before executing measurement")
 
