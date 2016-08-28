@@ -300,87 +300,91 @@ Note that some of the throughput data points are missing, this is because we mea
 \subsubsection{Test case 1}
 The first test case used the following media URLs:
 \begin{itemize}
-	\item Unpopular Youtube video: \\ https://www.youtube.com/watch?v=nKETYT-2NY8
-	\item Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0
+	\item Unpopular Youtube video: \\ 
+	https://www.youtube.com/watch?v=yRfwRsJrMzI
+	\item Popular Youtube video: \\
+	https://www.youtube.com/watch?v=9bZkp7q19f0
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
 Table \ref{table:UCTPingTests-TestCase1}, \ref{table:UCTHopCount-TestCase1} and \ref{table:UCTThroughput-TestCase1} contain the ping, number of hops and throughput for each run of test case 1.
 
 \begin{table}
-	\centering
-	\caption{Ping using UCT network}
-	\label{table:UCTPingTests-TestCase1}
-	\makebox[\linewidth]{
-	\small
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Website & CDN & Content \\ \hline
-	1 & Unpopular Youtube & 18  & 49  & 44  \\ \hline
-	  & Popular Youtube   & 45  & 19  & 18  \\ \hline
-	  & Soundcloud        & 179 & 148 & 154 \\ \hline
-	  & Twitch.tv         & 148 & 155 & 148 \\ \hline
-	2 & Unpopular Youtube & 21  & 19  & 19  \\ \hline
-	  & Popular Youtube   & 19  & 26  & 19  \\ \hline
-	  & Soundcloud        & 148 & 149 & 148 \\ \hline
-	  & Twitch.tv         & 148 & 148 & 148 \\ \hline
-	3 & Unpopular Youtube & 3   & 19  & 19  \\ \hline
-	  & Popular Youtube   & 2   & 45  & 68  \\ \hline
-	  & Soundcloud        & 148 & 148 & 148 \\ \hline
-	  & Twitch.tv         & 151 & 154 & 148 \\ \hline
-	\end{tabular}}
+    \centering
+    \caption{Ping using UCT network - Test 1}
+    \label{table:UCTPingTests-TestCase1}
+    \makebox[\linewidth]{
+    \small
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Website & CDN & Content \\ \hline
+    1 & Unpopular Youtube & 19  & 18  & 184 \\ \hline
+      & Popular Youtube   & 18  & 18  & 18  \\ \hline
+      & Twitch.tv         & 148 & 148 & 148 \\ \hline
+      & Soundcloud        & 148 & 149 & 149 \\ \hline
+    2 & Unpopular Youtube & 19  & 18  & 18  \\ \hline
+      & Popular Youtube   & 19  & 18  & 19  \\ \hline
+      & Twitch.tv         & 148 & 150 & 153 \\ \hline
+      & Soundcloud        & 148 & 148 & 192 \\ \hline
+    3 & Unpopular Youtube & 19  & 19  & 18  \\ \hline
+      & Popular Youtube   & 19  & 18  & 18  \\ \hline
+      & Twitch.tv         & 148 & 152 & 148 \\ \hline
+      & Soundcloud        & 148 & 149 & 150 \\ \hline
+    \end{tabular}}
 \end{table}
 
 \begin{table}
 	\centering
-	\caption{Hop count using UCT network}
+	\caption{Hop count using UCT network - Test 1}
 	\label{table:UCTHopCount-TestCase1}
 	\makebox[\linewidth]{
 	\small
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Website & CDN & Content \\ \hline
-	1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	\end{tabular}}
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Website & CDN & Content \\ \hline
+    1 & Unpopular Youtube & 9 & 9 & 16 \\ \hline
+      & Popular Youtube   & 9 & 9 & 9 \\ \hline
+      & Twitch.tv         & 13 & 11 & 11 \\ \hline
+      & Soundcloud        & 11 & 18 & 18 \\ \hline
+    2 & Unpopular Youtube & 10 & 9 & 9 \\ \hline
+      & Popular Youtube   & 10 & 9 & 9 \\ \hline
+      & Twitch.tv         & 12 & 13 & 13 \\ \hline
+      & Soundcloud        & 11 & 17 & 17 \\ \hline
+    3 & Unpopular Youtube & 10 & 9 & 9 \\ \hline
+      & Popular Youtube   & 9 & 9 & 9 \\ \hline
+      & Twitch.tv         & 13 & 13 & 13 \\ \hline
+      & Soundcloud        & 11 & 18 & 18 \\ \hline
+    \end{tabular}}
 \end{table}
 
 \begin{table}
 	\centering
-	\caption{Throughput using UCT network}
+	\caption{Throughput using UCT network - Test 1}
 	\label{table:UCTThroughput-TestCase1}
 	\makebox[\linewidth]{
 	\small
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Content \\ \hline
-	1 & Unpopular Youtube & 1484.8  \\ \hline
-	  & Popular Youtube   & 8560.6  \\ \hline
-	  & Soundcloud        & 1351.7  \\ \hline
-	  & Twitch.tv         & 11284.5 \\ \hline
-	2 & Unpopular Youtube & 7690.2  \\ \hline
-	  & Popular Youtube   & 8161.3  \\ \hline
-	  & Soundcloud        & -       \\ \hline
-	  & Twitch.tv         & 11264.0 \\ \hline
-	3 & Unpopular Youtube & 7598.1  \\ \hline
-	  & Popular Youtube   & 9543.7  \\ \hline
-	  & Soundcloud        & -       \\ \hline  
-	  & Twitch.tv         & 11233.3 \\ \hline
-	\end{tabular}}
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Content    \\ \hline
+    1 & Unpopular Youtube & 521.5  \\ \hline
+      & Popular Youtube   & 9809.9 \\ \hline
+      & Twitch.tv         & 11366.4    \\ \hline
+      & Soundcloud        & -    \\ \hline
+    2 & Unpopular Youtube & 6481.9  \\ \hline
+      & Popular Youtube   & 9840.6  \\ \hline
+      & Twitch.tv         & 3440.6    \\ \hline
+      & Soundcloud        & -    \\ \hline
+    3 & Unpopular Youtube & 8069.1  \\ \hline
+      & Popular Youtube   & 9881.6 \\ \hline
+      & Twitch.tv         & 11335.7    \\ \hline
+      & Soundcloud        & -    \\ \hline
+    \end{tabular}}
 \end{table}
 
 \subsubsection{Test case 2}
 The second test case used the following media URLs:
 \begin{itemize}
-	\item Unpopular Youtube video: \\ https://www.youtube.com/watch?v=nKETYT-2NY8
-	\item Popular Youtube video: \\ https://www.youtube.com/watch?v=9bZkp7q19f0
+	\item Unpopular Youtube video: \\ 
+	https://www.youtube.com/watch?v=tSzaFuCxjs0
+	\item Popular Youtube video: \\
+	https://www.youtube.com/watch?v=9bZkp7q19f0
 	\item Soundcloud audio: \\ https://soundcloud.com/nocopyrightsounds/lensko-cetus-ncs-release
 	\item Twitch.tv video: \\ https://www.twitch.tv/dota2ti/v/83400929
 \end{itemize}
@@ -388,72 +392,71 @@ Table \ref{table:UCTPing-TestCase2}, \ref{table:UCTHopCount-TestCase2} and \ref{
 
 \begin{table}
 	\centering
-	\caption{Ping using UCT network}
+	\caption{Ping using UCT network - Test 2}
 	\label{table:UCTPing-TestCase2}
 	\makebox[\linewidth]{
 	\small
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Website & CDN & Content \\ \hline
-	1 & Unpopular Youtube & 4   & 19  & 188 \\ \hline
-	  & Popular Youtube   & 4   & 19  & 21  \\ \hline
-	  & Twitch.tv         & 148 & 154 & 148 \\ \hline
-	  & Soundcloud        & 148 & 148 & 0   \\ \hline
-	2 & Unpopular Youtube & 3   & 47  & 19  \\ \hline
-	  & Popular Youtube   & 4   & 20  & 19  \\ \hline
-	  & Twitch.tv         & 172 & 154 & 0   \\ \hline
-	  & Soundcloud        & 148 & 149 & 149 \\ \hline
-	3 & Unpopular Youtube & 4   & 33  & 19  \\ \hline
-	  & Popular Youtube   & 3   & 20  & 18  \\ \hline
-	  & Twitch.tv         & 149 & 148 & 0   \\ \hline
-	  & Soundcloud        & 148 & 148 & 148 \\ \hline
-	\end{tabular}}
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Website & CDN & Content \\ \hline
+    1 & Unpopular Youtube & 19 & 3 & 182  \\ \hline
+      & Popular Youtube   & 19 & 18 & 18  \\ \hline
+      & Twitch.tv         & 148 & 150 & 148  \\ \hline
+      & Soundcloud        & 148 & 148 & 148  \\ \hline
+    2 & Unpopular Youtube & 19 & 3 & 3  \\ \hline
+      & Popular Youtube   & 19 & 18 & 18  \\ \hline
+      & Twitch.tv         & 148 & 150 & 150  \\ \hline
+      & Soundcloud        & 148 & 148 & 148  \\ \hline
+    3 & Unpopular Youtube & 19 & 3 & 3  \\ \hline
+      & Popular Youtube   & 20 & 18 & 18 \\ \hline
+      & Twitch.tv         & 148 & 148 & 148  \\ \hline
+      & Soundcloud        & 148 & 149 & 148  \\ \hline
+    \end{tabular}}	
 \end{table}
 
 \begin{table}
 	\centering
-	\caption{Hop count using UCT network}
+	\caption{Hop count using UCT network - Test 2}
 	\label{table:UCTHopCount-TestCase2}
 	\makebox[\linewidth]{
 	\small
-	% TODO: Update these with correct values
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Website & CDN & Content \\ \hline
-	1 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 1 \\ \hline
-	2 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 1 \\ \hline
-	3 & Unpopular Youtube & 9 & 9 & 9 \\ \hline
-	  & Popular Youtube   & 9 & 9 & 9 \\ \hline
-	  & Twitch.tv         & 9 & 9 & 9 \\ \hline
-	  & Soundcloud        & 9 & 9 & 1 \\ \hline
-	\end{tabular}}
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Website & CDN & Content \\ \hline
+    1 & Unpopular Youtube & 9 & 7 & 16  \\ \hline
+      & Popular Youtube   & 10 & 9 & 9  \\ \hline
+      & Twitch.tv         & 12 & 13 & 13  \\ \hline
+      & Soundcloud        & 11 & 17 & 17  \\ \hline
+    2 & Unpopular Youtube & 10 & 7 & 7  \\ \hline
+      & Popular Youtube   & 9 & 9 & 9  \\ \hline
+      & Twitch.tv         & 13 & 13 & 13  \\ \hline
+      & Soundcloud        & 11 & 16 & 16  \\ \hline
+    3 & Unpopular Youtube & 10 & 7 & 7  \\ \hline
+      & Popular Youtube   & 9 & 9 & 9  \\ \hline
+      & Twitch.tv         & 12 & 12 & 12  \\ \hline
+      & Soundcloud        & 11 & 18 & 18  \\ \hline
+    \end{tabular}}
 \end{table}
 
 \begin{table}
 	\centering
-	\caption{Throughput using UCT network}
+	\caption{Throughput using UCT network - Test 2}
 	\label{table:UCTThroughput-TestCase2}
 	\makebox[\linewidth]{
 	\small
-	\begin{tabular}{|l|l|c|c|c|} \hline
-	Run & Source & Content \\ \hline
-	1 & Unpopular Youtube & 190.9   \\ \hline
-	  & Popular Youtube   & 8048.6  \\ \hline
-	  & Twitch.tv         & 10526.7 \\ \hline
-	  & Soundcloud        & 1341.4  \\ \hline
-	2 & Unpopular Youtube & 9513.0  \\ \hline
-	  & Popular Youtube   & 8335.4  \\ \hline
-	  & Twitch.tv         & 11397.1 \\ \hline
-	  & Soundcloud        & -       \\ \hline
-	3 & Unpopular Youtube & 9840.6  \\ \hline
-	  & Popular Youtube   & 7260.2  \\ \hline
-	  & Twitch.tv         & 11274.2 \\ \hline  
-	  & Soundcloud        & -       \\ \hline
-	\end{tabular}}
+    \begin{tabular}{|l|l|c|c|c|} \hline
+    Run & Source & Content    \\ \hline
+    1 & Unpopular Youtube & 1525.8 \\ \hline
+      & Popular Youtube   & 9799.7 \\ \hline
+      & Twitch.tv         & 11427.8 \\ \hline
+      & Soundcloud        & - \\ \hline
+    2 & Unpopular Youtube & 4331.5 \\ \hline
+      & Popular Youtube   & 9820.2 \\ \hline
+      & Twitch.tv         & 11397.1 \\ \hline
+      & Soundcloud        & - \\ \hline
+    3 & Unpopular Youtube & 11274.2 \\ \hline
+      & Popular Youtube   & 9175.0 \\ \hline
+      & Twitch.tv         & 11325.4 \\ \hline
+      & Soundcloud        & 1689.6 \\ \hline
+    \end{tabular}}
 \end{table}
 
 \subsubsection{Discussions}
