@@ -93,8 +93,6 @@ In the case of institutional networks, all our measurements were done while conn
 
 \section{Results}\label{sec:results}
 \subsection{Home network}
-%TODO (Jacques) I think it might be good to analyse the WHOIS organisation for Twitch and Soundcloud. Is the same organisation serving up the content for each ISP? Who is serving up the content for these two services?
-
 % TODO (Brian) Maybe run a speed test so we can quote the results and give perspective for our result numbers?
 
 
@@ -170,7 +168,6 @@ Table \ref{table:avgPingAcrossISP}, \ref{table:avgHopsAcrossISP} and \ref{avgThr
 	  & Twitch.tv         & 204.9 \\ \hline
 	\end{tabular}}
 \end{table}
-% TODO: Table of "offset from median" of the metrics for each ISP
 It is immediately clear that the throughput does not differ much across websites or runs, although this is not unexpected given the relatively low bandwidth of the home connection. Another trend which is immediately clear is the significant difference between ping and number of hops to Youtube and Soundcloud/Twitch.tv. This is simply because Youtube content is cached within South Africa while Twitch.tv and Soundcloud do not, most likely because they are not large enough to be able to afford setting up expensive caches all over the world.
 
 One thing that is less obvious is the difference of the first run to the other two for the unpopular Youtube video. In runs 2 and 3 the actual content came from the same organisation that hosts the CDN, but in run 1 we see significant increase in latency and note that the content comes from a different organisation. The cause of this is clear if we look at Table \ref{table:LatencyToUnpopularYouTubeVideo} and \ref{table:OrgHostingUnpopularYouTubeVideo} which shows the ping to the content IP and the organisation that manages it.
@@ -286,8 +283,8 @@ To investigate the differences between ISPs, we present below the offset from th
 	Total                & 0.4  & -13.8 & -9.2  & -0.3 & -10.2\\ \hline
 	\end{tabular}}
 \end{table}
-While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping, although still less than 100ms, suggesting that the caches for WebAfrica are still within South Africa but not in Cape Town (for example, they could be in Johannesburg). 
-% Can you expand the above statement. What is less than 100ms? Because twitch and soundcloud is always in EU > 100ms.
+While the different ISPs clearly perform differently, the only significant trend is that WebAfrica consistently gave a higher ping than other ISPs. The only exception to this is the ping to the Youtube website where WebAfrica performed slightly better than the median.
+
 The differences in throughput are not significant and while there are some significant differences in latency, they are not consistent and so are likely due to external factors on the network.
 
 \subsubsection{Content server owners}
